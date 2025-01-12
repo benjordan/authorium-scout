@@ -1,6 +1,6 @@
 <x-layout>
     <h1 class="text-2xl font-bold">{{ $epic['fields']['summary'] }}</h1>
-    <p class="mt-4">{{ is_array($epic['fields']['summary']) ? implode(', ', $epic['fields']['summary']) : $epic['fields']['summary'] }}</p>
+    <div class="mt-4 prose">{!! $epic['renderedFields']['description'] ?? 'No description available' !!}</div>
 
     <h2 class="text-xl mt-8">Child Issues</h2>
     <table class="mt-4 table-auto w-full border">

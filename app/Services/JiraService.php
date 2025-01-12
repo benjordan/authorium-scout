@@ -51,6 +51,9 @@ class JiraService
         return json_decode($response->getBody(), true)['issues'];
     }
 
+    /**
+     * Fetch all epics in a release.
+     */
     public function getAllEpicsInRelease($releaseKey)
     {
 
@@ -64,13 +67,16 @@ class JiraService
         return json_decode($response->getBody(), true)['issues'];
     }
 
+    /**
+     * Fetch all issues in a release.
+     */
     public function getIssuesInRelease($releaseKey)
     {
         $response = $this->client->get("/rest/api/3/search", [
             'query' => [
                 'jql' => "fixVersion = '{$releaseKey}' ORDER BY status ASC",
                 'fields' => 'status',
-                'maxResults' => 1000, // Adjust based on your Jira instance limits
+                'maxResults' => 1000,
             ],
         ]);
 
@@ -82,7 +88,13 @@ class JiraService
      */
     public function getEpic($epicKey)
     {
-        $response = $this->client->get("/rest/api/3/issue/{$epicKey}");
+        $response = $this->client->get("/rest/api/3/issue/{$epicKey}", [
+            'query' => [
+                'fields' => 'summary,priority,description',
+                'expand' => 'renderedFields',
+            ],
+        ]);
+
         return json_decode($response->getBody(), true);
     }
 

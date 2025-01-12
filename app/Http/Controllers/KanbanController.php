@@ -47,17 +47,18 @@ class KanbanController extends Controller
     public function full()
     {
         // Get all unreleased releases
+        dd($epic['fields']['description']);
         $releases = $this->jira->getUnreleasedReleases();
 
         // Prepare data for Kanban
         $kanbanData = [];
         foreach ($releases as $release) {
-            $epics = $this->jira->getEpicsInRelease($release['id']); // Fetch all epics
+            $epics = $this->jira->getAllEpicsInRelease($release['id']); // Fetch all epics
 
             // Sort epics by priority and then alphabetically by summary
             usort($epics, function ($a, $b) {
                 // Define the order of priorities
-                $priorityOrder = ['P0', 'Critical', 'High', 'Medium', 'Low'];
+                $priorityOrder = ['Critical', 'P0', 'P1', 'P2'];
 
                 $aPriority = array_search($a['fields']['priority']['name'], $priorityOrder);
                 $bPriority = array_search($b['fields']['priority']['name'], $priorityOrder);
