@@ -26,6 +26,10 @@ class JiraService
     {
         $projectKey = env('JIRA_PROJECT_KEY');
 
+        if (empty($projectKey)) {
+            throw new \Exception('JIRA_BASE_URL or JIRA_PROJECT_KEY is not configured.');
+        }
+
         // Fetch versions from the project
         $response = $this->client->get("/rest/api/3/project/{$projectKey}/versions");
         $versions = json_decode($response->getBody(), true);
