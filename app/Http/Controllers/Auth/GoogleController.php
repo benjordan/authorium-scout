@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 
@@ -30,7 +31,7 @@ class GoogleController extends Controller
             [
                 'name' => $googleUser->name,
                 'google_id' => $googleUser->id,
-                'password' => Hash::make(str_random(16)), // Generate a random hashed password
+                'password' => Hash::make(Str::random(16)), // Generate a hashed random password
             ]
         );
 
