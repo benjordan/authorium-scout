@@ -1,15 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-.chart-container {
-    width: 320px; /* Fixed width */
-    height: 320px; /* Fixed height */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.chart-container canvas {
-    width: 100% !important;
-    height: 100% !important;
-}

@@ -47,7 +47,6 @@ class KanbanController extends Controller
     public function full()
     {
         // Get all unreleased releases
-        dd($epic['fields']['description']);
         $releases = $this->jira->getUnreleasedReleases();
 
         // Prepare data for Kanban
