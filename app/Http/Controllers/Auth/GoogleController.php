@@ -38,6 +38,6 @@ class GoogleController extends Controller
         // Log in the user
         Auth::login($user);
 
-        return redirect('/dashboard');
+        return redirect('/');
     }
 }
