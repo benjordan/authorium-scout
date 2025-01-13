@@ -28,8 +28,8 @@ class GoogleController extends Controller
             ['email' => $googleUser->email],
             [
                 'name' => $googleUser->name,
-                'email' => $googleUser->email,
                 'google_id' => $googleUser->id,
+                'password' => Hash::make(str_random(16)), // Set a random hashed password
             ]
         );
 
