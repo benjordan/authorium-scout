@@ -25,7 +25,7 @@ class ReleaseController extends Controller
     public function criticalEpics($releaseKey)
     {
         // Fetch Critical and P0 epics for the release
-        $epics = $this->jira->getEpicsInRelease($releaseKey, ['Critical', 'P0']);
+        $epics = $this->jira->getAllEpicsInRelease($releaseKey);
 
         // Pass $epics and $releaseKey to the view
         return view('releases.epics', compact('epics', 'releaseKey'));
