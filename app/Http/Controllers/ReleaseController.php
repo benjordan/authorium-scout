@@ -27,6 +27,23 @@ class ReleaseController extends Controller
         // Fetch Critical and P0 epics for the release
         $epics = $this->jira->getAllEpicsInRelease($releaseKey);
 
+        // Define the priority order
+        $priorityOrder = ['Critical', 'P0', 'P1', 'P2'];
+
+        // Sort epics by priority and then by summary
+        usort($epics, function ($a, $b) use ($priorityOrder) {
+            $aPriority = array_search($a['fields']['priority']['name'] ?? '', $priorityOrder);
+            $bPriority = array_search($b['fields']['priority']['name'] ?? '', $priorityOrder);
+
+            // If priorities are the same, sort alphabetically by summary
+            if ($aPriority === $bPriority) {
+                return strcmp($a['fields']['summary'] ?? '', $b['fields']['summary'] ?? '');
+            }
+
+            // Otherwise, sort by priority
+            return $aPriority - $bPriority;
+        });
+
         // Pass $epics and $releaseKey to the view
         return view('releases.epics', compact('epics', 'releaseKey'));
     }
