@@ -1,5 +1,5 @@
 <x-layout>
-    <h1 class="text-2xl font-bold mb-4">Epics in Release: {{ $release['name'] }}</h1>
+    <h1 class="text-2xl font-bold mb-4">Epics in Release: {{ $releaseName }}</h1>
     <ul>
         @foreach($epics as $epic)
             <li class="border-b p-2">

@@ -38,6 +38,13 @@ class JiraService
         return array_filter($versions, fn($version) => !$version['released']);
     }
 
+    public function getReleaseDetails($releaseId)
+    {
+        $response = $this->client->get("/rest/api/3/version/{$releaseId}");
+
+        return json_decode($response->getBody(), true);
+    }
+
     /**
      * Fetch Critical and P0 epics in a release.
      */

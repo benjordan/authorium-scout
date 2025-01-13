@@ -24,6 +24,9 @@ class ReleaseController extends Controller
     // Show Critical and P0 epics in a release
     public function criticalEpics($releaseKey)
     {
+        // Fetch release details from Jira
+        $release = $this->jira->getReleaseDetails($releaseKey); // Ensure this method fetches the release details, including the name
+
         // Fetch Critical and P0 epics for the release
         $epics = $this->jira->getAllEpicsInRelease($releaseKey);
 
@@ -35,17 +38,19 @@ class ReleaseController extends Controller
             $aPriority = array_search($a['fields']['priority']['name'] ?? '', $priorityOrder);
             $bPriority = array_search($b['fields']['priority']['name'] ?? '', $priorityOrder);
 
-            // If priorities are the same, sort alphabetically by summary
             if ($aPriority === $bPriority) {
                 return strcmp($a['fields']['summary'] ?? '', $b['fields']['summary'] ?? '');
             }
 
-            // Otherwise, sort by priority
             return $aPriority - $bPriority;
         });
 
-        // Pass $epics and $releaseKey to the view
-        return view('releases.epics', compact('epics', 'releaseKey'));
+        // Pass $epics, $releaseKey, and $releaseName to the view
+        return view('releases.epics', [
+            'epics' => $epics,
+            'releaseKey' => $releaseKey,
+            'releaseName' => $release['name'] ?? $releaseKey, // Use the release name or fallback to the key if the name is unavailable
+        ]);
     }
 
     // Show epic details with child issues
