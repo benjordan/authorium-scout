@@ -24,14 +24,9 @@ class JiraService
      */
     public function getUnreleasedReleases()
     {
-        $projectKey = env('JIRA_PROJECT_KEY');
-
-        if (empty($projectKey)) {
-            throw new \Exception('JIRA_BASE_URL or JIRA_PROJECT_KEY is not configured.');
-        }
 
         // Fetch versions from the project
-        $response = $this->client->get("/rest/api/3/project/{$projectKey}/versions");
+        $response = $this->client->get("/rest/api/3/project/AA/versions");
         $versions = json_decode($response->getBody(), true);
 
         // Filter for unreleased versions
