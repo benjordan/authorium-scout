@@ -41,4 +41,10 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'jira' => [
+        'base_url' => env('JIRA_BASE_URL'),
+        'project_key' => env('JIRA_PROJECT_KEY'),
+        'username' => env('JIRA_USERNAME'),
+        'api_token' => env('JIRA_API_TOKEN'),
+    ],
 ];

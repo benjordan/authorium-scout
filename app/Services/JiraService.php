@@ -11,9 +11,9 @@ class JiraService
     public function __construct()
     {
         $this->client = new Client([
-            'base_uri' => env('JIRA_BASE_URL'),
+            'base_uri' => $projectKey = config('services.jira.base_url'),
             'headers' => [
-                'Authorization' => 'Basic ' . base64_encode(env('JIRA_USERNAME') . ':' . env('JIRA_API_TOKEN')),
+                'Authorization' => 'Basic ' . base64_encode(config('services.jira.username') . ':' . config('services.jira.api_token')),
                 'Accept' => 'application/json',
             ],
         ]);
@@ -24,7 +24,8 @@ class JiraService
      */
     public function getUnreleasedReleases()
     {
-        $projectKey = env('JIRA_PROJECT_KEY');
+        $projectKey =
+            $projectKey = config('services.jira.project_key');
 
         if (empty($projectKey)) {
             throw new \Exception('JIRA_BASE_URL or JIRA_PROJECT_KEY is not configured.');
