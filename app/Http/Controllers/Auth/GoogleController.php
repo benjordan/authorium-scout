@@ -22,7 +22,7 @@ class GoogleController extends Controller
 
         // Restrict login to authorium.com domain
         if (!str_ends_with($googleUser->email, '@authorium.com')) {
-            return redirect('/')->with('error', 'Only @authorium.com emails are allowed.');
+            return redirect('/login')->with('error', 'Only @authorium.com emails are allowed.');
         }
 
         // Find or create user
