@@ -11,7 +11,7 @@ class JiraService
     public function __construct()
     {
         $this->client = new Client([
-            'base_uri' => 'https://cityinnovate.atlassian.net/',
+            'base_uri' => env('JIRA_BASE_URL'),
             'headers' => [
                 'Authorization' => 'Basic ' . base64_encode(env('JIRA_USERNAME') . ':' . env('JIRA_API_TOKEN')),
                 'Accept' => 'application/json',
@@ -24,9 +24,14 @@ class JiraService
      */
     public function getUnreleasedReleases()
     {
+        $projectKey = env('JIRA_PROJECT_KEY');
+
+        if (empty($projectKey)) {
+            throw new \Exception('JIRA_BASE_URL or JIRA_PROJECT_KEY is not configured.');
+        }
 
         // Fetch versions from the project
-        $response = $this->client->get("/rest/api/3/project/AA/versions");
+        $response = $this->client->get("/rest/api/3/project/{$projectKey}/versions");
         $versions = json_decode($response->getBody(), true);
 
         // Filter for unreleased versions
