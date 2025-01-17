@@ -11,7 +11,7 @@ class JiraService
     public function __construct()
     {
         $this->client = new Client([
-            'base_uri' => env('JIRA_BASE_URL'),
+            'base_uri' => 'https://cityinnovate.atlassian.net/',
             'headers' => [
                 'Authorization' => 'Basic ' . base64_encode(env('JIRA_USERNAME') . ':' . env('JIRA_API_TOKEN')),
                 'Accept' => 'application/json',
