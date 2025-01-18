@@ -1,5 +1,11 @@
-<x-layout>
-    <h1 class="text-2xl font-bold mb-4">Unreleased Releases</h1>
+<x-app-layout>
+
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Unreleased Releases') }}
+        </h2>
+    </x-slot>
+
     <ul>
         @foreach($releases as $release)
             <li class="border-b p-2">
@@ -9,4 +15,5 @@
             </li>
         @endforeach
     </ul>
-</x-layout>
+
+</x-app-layout>
