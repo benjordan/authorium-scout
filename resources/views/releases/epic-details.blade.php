@@ -1,4 +1,4 @@
-<x-layout>
+<x-app-layout>
     <h1 class="text-2xl font-bold">{{ $epic['fields']['summary'] }}</h1>
     <div class="mt-4 prose">{!! $epic['renderedFields']['description'] ?? 'No description available' !!}</div>
 
@@ -19,4 +19,4 @@
             @endforeach
         </tbody>
     </table>
-</x-layout>
+</x-app-layout>

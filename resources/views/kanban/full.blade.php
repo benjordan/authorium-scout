@@ -1,4 +1,4 @@
-<x-layout>
+<x-app-layout>
     <h1 class="text-3xl font-bold mb-6">Kanban Board: All Epics</h1>
 
     <div x-data="{ search: '' }">
@@ -49,29 +49,17 @@
     <!-- Include Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            @foreach($kanbanData as $column)
-                // Unique variables for each chart
-                const ctx_{{ $column['release']['id'] }} = document.getElementById('chart-{{ $column['release']['id'] }}').getContext('2d');
-
-                const data_{{ $column['release']['id'] }} = {
-                    labels: {!! json_encode(array_keys($column['statusCounts'])) !!},
-                    datasets: [{
-                        data: {!! json_encode(array_values($column['statusCounts'])) !!},
-                        backgroundColor: ['#4CAF50', '#FFC107', '#F44336', '#2196F3', '#9C27B0'], // Example colors
-                    }]
-                };
-
-                new Chart(ctx_{{ $column['release']['id'] }}, {
-                    type: 'pie',
-                    data: data_{{ $column['release']['id'] }},
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                    }
-                });
+    <div class="container mx-auto py-6">
+        <h1 class="text-2xl font-bold mb-4">Epics for Component</h1>
+        @if (count($epics))
+            @foreach ($epics as $epic)
+            <div class="mb-4 bg-white p-4 rounded shadow">
+                <h2 class="text-lg font-bold">{{ $epic['fields']['summary'] }}</h2>
+                <p class="text-gray-600">Release: {{ $epic['fields']['fixVersions'][0]['name'] ?? 'Unassigned' }}</p>
+            </div>
             @endforeach
-        });
-    </script>
-</x-layout>
+        @else
+            <p class="text-gray-600">No epics found for this component.</p>
+        @endif
+    </div>
+</x-app-layout>

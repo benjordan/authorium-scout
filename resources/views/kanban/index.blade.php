@@ -1,4 +1,4 @@
-<x-layout>
+<x-app-layout>
     <h1 class="text-3xl font-bold mb-6">Kanban Board: Unreleased Releases</h1>
 
     <div x-data="{ search: '' }">
@@ -38,4 +38,4 @@
             @endforeach
         </div>
     </div>
-</x-layout>
+</x-app-layout>

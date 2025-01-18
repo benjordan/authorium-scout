@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Services\JiraService;
+
+use Illuminate\Http\Request;
+
+class FeatureController extends Controller
+{
+    protected $jira;
+
+    public function __construct(JiraService $jira)
+    {
+        $this->jira = $jira;
+    }
+
+    public function index()
+    {
+        $features = $this->jira->getProjectFeatures();
+
+        return view('features.index', compact('features'));
+    }
+
+    public function show($id)
+    {
+        $data = $this->jira->getEpicsByComponent($id);
+
+        return view('features.show', [
+            'feature' => $data['component'], // Pass component details
+            'epics' => $data['epics'],
+            'bugs' => $data['bugs'],
+            'requests' => $data['requests'],
+        ]);
+    }
+}
