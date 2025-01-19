@@ -1,13 +1,13 @@
 <x-app-layout>
     <div x-data="{ search: '' }" class="h-screen flex flex-col">
         <!-- Header -->
-        <div class="flex items-center justify-between px-10 py-4 bg-gray-100 shadow">
-            <h1 class="text-2xl font-bold">Kanban Board</h1>
+        <div class="flex items-center justify-between px-6 py-4 bg-gray-800">
+            <h1 class="text-xl font-bold text-gray-100">Kanban Board</h1>
             <input
                 type="text"
                 x-model="search"
                 placeholder="Search Epics..."
-                class="w-64 p-2 border border-gray-300 rounded"
+                class="w-64 px-3 py-1.5 text-sm border border-gray-300 rounded"
             />
         </div>
 
@@ -39,7 +39,7 @@
                                             'Critical' => 'bg-red-500',
                                             'Standard' => 'bg-blue-500',
                                             'Enhancement' => 'bg-green-500',
-                                            default => 'bg-gray-300',
+                                            default => 'bg-gray-200',
                                         };
                                     @endphp
                                     <div
