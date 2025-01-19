@@ -3,7 +3,7 @@
     <ul>
         @foreach($epics as $epic)
             <li class="border-b p-2">
-                <a href="{{ route('epics.show', $epic['key']) }}" class="text-blue-500">
+                <a href="{{ route('epic-details', $epic['key']) }}" class="text-blue-500">
                     {{ $epic['fields']['summary'] }}
                 </a>
                 <span class="text-sm text-gray-600">

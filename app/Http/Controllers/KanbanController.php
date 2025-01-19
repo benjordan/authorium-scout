@@ -19,11 +19,17 @@ class KanbanController extends Controller
         // Get all unreleased releases
         $releases = $this->jira->getUnreleasedReleases();
 
+        // Sort releases by release date
+        usort($releases, function ($a, $b) {
+            return strtotime($a['releaseDate']) <=> strtotime($b['releaseDate']);
+        });
+
         // Get epics for each release, ordered by priority and then summary
         $kanbanData = [];
         foreach ($releases as $release) {
             $epics = $this->jira->getEpicsInRelease($release['id']);
-            // Sort by priority first and then alphabetically
+
+            // Sort epics by priority and then alphabetically
             usort($epics, function ($a, $b) {
                 $priorityOrder = ['Critical', 'P0', 'P1', 'P2'];
                 $aPriority = array_search($a['fields']['priority']['name'], $priorityOrder);
@@ -35,19 +41,30 @@ class KanbanController extends Controller
                 return $aPriority - $bPriority;
             });
 
+            // Include the Customer Commitment field
+            foreach ($epics as &$epic) {
+                $epic['fields']['customerCommitment'] = $epic['fields']['customfield_10473']['value'] ?? null;
+            }
+
             $kanbanData[] = [
                 'release' => $release,
                 'epics' => $epics,
             ];
         }
 
-        return view('kanban.index', compact('kanbanData'));
+        $type = 'index'; // Differentiator for the view
+        return view('kanban.index', compact('kanbanData', 'type'));
     }
 
     public function full()
     {
         // Get all unreleased releases
         $releases = $this->jira->getUnreleasedReleases();
+
+        // Sort releases by release date
+        usort($releases, function ($a, $b) {
+            return strtotime($a['releaseDate']) <=> strtotime($b['releaseDate']);
+        });
 
         // Prepare data for Kanban
         $kanbanData = [];
@@ -56,19 +73,21 @@ class KanbanController extends Controller
 
             // Sort epics by priority and then alphabetically by summary
             usort($epics, function ($a, $b) {
-                // Define the order of priorities
                 $priorityOrder = ['Critical', 'P0', 'P1', 'P2'];
-
                 $aPriority = array_search($a['fields']['priority']['name'], $priorityOrder);
                 $bPriority = array_search($b['fields']['priority']['name'], $priorityOrder);
 
-                // If priorities are the same, sort alphabetically by summary
                 if ($aPriority === $bPriority) {
                     return strcmp($a['fields']['summary'], $b['fields']['summary']);
                 }
 
                 return $aPriority - $bPriority;
             });
+
+            // Include the Customer Commitment field
+            foreach ($epics as &$epic) {
+                $epic['fields']['customerCommitment'] = $epic['fields']['customfield_10473']['value'] ?? null;
+            }
 
             // Fetch all issues in the release for status counts
             $issues = $this->jira->getIssuesInRelease($release['id']); // All issues in the release
@@ -91,6 +110,7 @@ class KanbanController extends Controller
             ];
         }
 
-        return view('kanban.full', compact('kanbanData'));
+        $type = 'full'; // Differentiator for the view
+        return view('kanban.index', compact('kanbanData', 'type'));
     }
 }

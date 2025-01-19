@@ -74,7 +74,7 @@ class JiraService
                 $response = $this->client->get("/rest/api/3/search", [
                     'query' => [
                         'jql' => "fixVersion = '{$releaseKey}' AND priority IN ({$priorityFilter}) AND issuetype = Epic ORDER BY summary ASC",
-                        'fields' => 'summary,priority,status',
+                        'fields' => 'summary,priority,status,customfield_10473',
                     ],
                 ]);
 
@@ -96,7 +96,7 @@ class JiraService
                 $response = $this->client->get("/rest/api/3/search", [
                     'query' => [
                         'jql' => "fixVersion = '{$releaseKey}' AND issuetype = Epic ORDER BY summary ASC",
-                        'fields' => 'summary,priority,status',
+                        'fields' => 'summary,priority,status,customfield_10473',
                     ],
                 ]);
                 return json_decode($response->getBody(), true)['issues'];
@@ -210,12 +210,30 @@ class JiraService
                 ]);
                 $epics = json_decode($epicResponse->getBody(), true)['issues'] ?? [];
 
-                // Group epics by release
+                // Prepare release date mapping and group epics
+                $fixVersionDates = [];
                 $groupedEpics = [];
                 foreach ($epics as $epic) {
-                    $release = $epic['fields']['fixVersions'][0]['name'] ?? 'Not in a Release';
-                    $groupedEpics[$release][] = $epic;
+                    $fixVersions = $epic['fields']['fixVersions'] ?? [];
+                    if (empty($fixVersions)) {
+                        $groupedEpics['Not in a Fix Version'][] = $epic;
+                    } else {
+                        foreach ($fixVersions as $fixVersion) {
+                            $fixVersionDates[$fixVersion['name']] = $fixVersion['releaseDate'] ?? '9999-12-31';
+                            $groupedEpics[$fixVersion['name']][] = $epic;
+                        }
+                    }
                 }
+
+                // Ensure "Not in a Fix Version" exists for consistent usage
+                if (!isset($groupedEpics['Not in a Fix Version'])) {
+                    $groupedEpics['Not in a Fix Version'] = [];
+                }
+
+                // Sort grouped epics by release date
+                uksort($groupedEpics, function ($a, $b) use ($fixVersionDates) {
+                    return strtotime($fixVersionDates[$a] ?? '9999-12-31') <=> strtotime($fixVersionDates[$b] ?? '9999-12-31');
+                });
 
                 // Fetch bugs
                 $bugJql = "project = '{$projectKey}' AND component = '{$componentId}' AND issuetype = 'Bug'";
@@ -231,8 +249,16 @@ class JiraService
                 ]);
                 $requests = json_decode($requestResponse->getBody(), true)['issues'] ?? [];
 
+                // Calculate counts
+                $counts = [
+                    'epics' => array_reduce($groupedEpics, fn($carry, $epics) => $carry + count($epics), 0),
+                    'bugs' => count($bugs),
+                    'requests' => count($requests),
+                ];
+
                 return [
                     'component' => $componentDetails,
+                    'counts' => $counts,
                     'epics' => $groupedEpics,
                     'bugs' => $bugs,
                     'requests' => $requests,
@@ -302,17 +328,36 @@ class JiraService
             ]);
             $epics = json_decode($epicResponse->getBody(), true)['issues'] ?? [];
 
+            // Group epics by fix version and sort by release date
             $groupedEpics = [];
+            $fixVersionDates = [];
+
             foreach ($epics as $epic) {
                 $fixVersions = $epic['fields']['fixVersions'] ?? [];
                 if (empty($fixVersions)) {
+                    if (!isset($groupedEpics['Not in a Fix Version'])) {
+                        $groupedEpics['Not in a Fix Version'] = [];
+                        $fixVersionDates['Not in a Fix Version'] = '9999-12-31'; // Assign distant future date
+                    }
                     $groupedEpics['Not in a Fix Version'][] = $epic;
                 } else {
                     foreach ($fixVersions as $fixVersion) {
-                        $groupedEpics[$fixVersion['name']][] = $epic;
+                        $fixVersionName = $fixVersion['name'];
+                        $fixVersionDate = $fixVersion['releaseDate'] ?? '9999-12-31';
+                        $fixVersionDates[$fixVersionName] = $fixVersionDate;
+
+                        if (!isset($groupedEpics[$fixVersionName])) {
+                            $groupedEpics[$fixVersionName] = [];
+                        }
+                        $groupedEpics[$fixVersionName][] = $epic;
                     }
                 }
             }
+
+            // Sort grouped epics by release date
+            uksort($groupedEpics, function ($a, $b) use ($fixVersionDates) {
+                return strtotime($fixVersionDates[$a]) <=> strtotime($fixVersionDates[$b]);
+            });
 
             // Fetch bugs
             $bugJql = "{$customerJql} AND issuetype = 'Bug'";

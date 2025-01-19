@@ -27,6 +27,7 @@ class FeatureController extends Controller
         $data = $this->jira->getEpicsByComponent($id);
 
         return view('features.show', [
+            'counts' => $data['counts'],
             'feature' => $data['component'], // Pass component details
             'epics' => $data['epics'],
             'bugs' => $data['bugs'],
