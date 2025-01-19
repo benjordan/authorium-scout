@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+div.dt-container select.dt-input {
+    padding-right: 30px;
+}

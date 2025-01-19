@@ -10,7 +10,7 @@
 
         <!-- Epic Table -->
         <div class="bg-white p-6 rounded shadow">
-            <table id="epicsTable" class="table-auto w-full border border-gray-200">
+            <table id="epicsTable" class="stripe">
                 <thead>
                     <tr class="bg-gray-200 text-gray-700">
                         <th class="border px-4 py-2">Summary</th>
