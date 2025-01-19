@@ -6,6 +6,12 @@
     <div class="bg-white p-6 rounded shadow">
         <h1 class="text-3xl font-bold text-gray-800">{{ $customer['name'] }}</h1>
         <p class="text-gray-600 mt-2">{{ $customer['description'] ?? 'No description available' }}</p>
+
+        <p class="text-gray-600">
+            <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Epics: {{ $counts['epics'] }}</span>
+            <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Bugs: {{ $counts['bugs'] }}</span>
+            <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded">Requests: {{ $counts['requests'] }}</span>
+        </p>
     </div>
 
     <!-- Epics by Fix Version -->

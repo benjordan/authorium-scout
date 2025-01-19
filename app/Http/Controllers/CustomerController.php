@@ -28,6 +28,7 @@ class CustomerController extends Controller
 
         return view('customers.show', [
             'customer' => $data['customer'],
+            'counts' => $data['counts'],
             'epics' => $data['epics'],
             'bugs' => $data['bugs'],
             'requests' => $data['requests'],
