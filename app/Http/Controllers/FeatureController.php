@@ -24,7 +24,7 @@ class FeatureController extends Controller
 
     public function show($id)
     {
-        $data = $this->jira->getEpicsByComponent($id);
+        $data = $this->jira->getEpicsByFeature($id);
 
         return view('features.show', [
             'counts' => $data['counts'],

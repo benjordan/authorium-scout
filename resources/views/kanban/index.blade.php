@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div x-data="{ search: '' }" class="h-screen flex flex-col">
+    <div x-data="{ search: '' }" class="h-[calc(100vh-76px)] flex flex-col">
         <!-- Header -->
         <div class="flex items-center justify-between px-6 py-4 bg-gray-800">
             <h1 class="text-xl font-bold text-gray-100">Kanban Board</h1>

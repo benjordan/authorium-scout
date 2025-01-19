@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\EpicController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\KanbanController;
@@ -21,18 +22,20 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/', [ReleaseController::class, 'unreleasedReleases'])->name('home');
-    Route::get('/releases/{releaseKey}', [ReleaseController::class, 'criticalEpics'])->name('release-epics');
-    Route::get('/epics/{epicKey}', [ReleaseController::class, 'epicDetails'])->name('epics.show');
-
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
     Route::get('/customers/{id}', [CustomerController::class, 'show'])->name('customers.show');
+
+    Route::get('/epics', [EpicController::class, 'index'])->name('epics.index');
+    Route::get('/epics/{key}', [EpicController::class, 'show'])->name('epics.show');
 
     Route::get('/features', [FeatureController::class, 'index'])->name('features.index');
     Route::get('/features/{id}', [FeatureController::class, 'show'])->name('features.show');
 
     Route::get('/kanban', [KanbanController::class, 'index'])->name('kanban');
-    Route::get('/kanban-full', [KanbanController::class, 'full'])->name('kanban-full');
+    Route::get('/kanban/full', [KanbanController::class, 'full'])->name('kanban-full');
+
+    Route::get('/releases', [ReleaseController::class, 'index'])->name('releases.index');
+    Route::get('/releases/{id}', [ReleaseController::class, 'show'])->name('releases.show');
 });
 
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');

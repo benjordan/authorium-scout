@@ -47,6 +47,18 @@ class JiraService
         );
     }
 
+    public function getReleaseById($releaseId)
+    {
+        $cacheKey = "jira_release_{$releaseId}";
+        return $this->cachedApiCall(
+            $cacheKey,
+            function () use ($releaseId) {
+                $response = $this->client->get("/rest/api/3/version/{$releaseId}");
+                return json_decode($response->getBody(), true);
+            }
+        );
+    }
+
     public function getReleaseDetails($releaseId)
     {
         $cacheKey = "jira_release_details_{$releaseId}";
@@ -126,22 +138,59 @@ class JiraService
         );
     }
 
+    public function getOpenEpics()
+    {
+        $cacheKey = 'jira_open_epics';
+        $cacheDuration = now()->addMinutes(30); // Cache for 30 minutes
+
+        return cache()->remember($cacheKey, $cacheDuration, function () {
+            $allEpics = [];
+            $startAt = 0; // Pagination starting index
+            $maxResults = 100; // Jira API's page size limit
+
+            do {
+                // Fetch a single page of results
+                $response = $this->client->get('/rest/api/3/search', [
+                    'query' => [
+                        'jql' => "project = AA AND issuetype = Epic AND statusCategory != Done ORDER BY priority DESC, summary ASC",
+                        'fields' => 'summary,priority,status,parent,customfield_10473,customfield_10507',
+                        'startAt' => $startAt,
+                        'maxResults' => $maxResults,
+                    ],
+                ]);
+
+                $data = json_decode($response->getBody(), true);
+                $issues = $data['issues'] ?? [];
+
+                // Append current page of issues to the full result set
+                $allEpics = array_merge($allEpics, $issues);
+
+                // Increment the starting index for the next page
+                $startAt += $maxResults;
+            } while (count($issues) === $maxResults); // Continue fetching until a page has fewer than maxResults
+
+            return $allEpics; // Return all fetched epics
+        });
+    }
+
     /**
      * Fetch details of a specific epic by its key.
      */
-    public function getEpic($epicKey)
+    public function getEpicByKey($epicKey)
     {
         $cacheKey = "jira_epic_{$epicKey}";
-
-        return $this->cachedApiCall($cacheKey, function () use ($epicKey) {
-            $response = $this->client->get("/rest/api/3/issue/{$epicKey}", [
-                'query' => [
-                    'fields' => 'summary,priority,description',
-                    'expand' => 'renderedFields',
-                ],
-            ]);
-            return json_decode($response->getBody(), true);
-        });
+        return $this->cachedApiCall(
+            $cacheKey,
+            function () use ($epicKey) {
+                $response = $this->client->get("/rest/api/3/issue/{$epicKey}", [
+                    'query' => [
+                        'fields' => 'summary,priority,status,customfield_10473,description',
+                        'expand' => 'renderedFields',
+                    ],
+                ]);
+                return json_decode($response->getBody(), true);
+            }
+        );
     }
 
     /**
@@ -184,13 +233,13 @@ class JiraService
         );
     }
 
-    public function getEpicsByComponent($componentId)
+    public function getEpicsByFeature($featureId)
     {
-        $cacheKey = "jira_epics_by_component_{$componentId}";
+        $cacheKey = "jira_epics_by_component_{$featureId}";
 
         return $this->cachedApiCall(
             $cacheKey,
-            function () use ($componentId) {
+            function () use ($featureId) {
                 $baseUrl = config('services.jira.base_url');
                 $projectKey = config('services.jira.project_key');
 
@@ -199,12 +248,12 @@ class JiraService
                 }
 
                 // Fetch component details
-                $componentUrl = "{$baseUrl}/rest/api/3/component/{$componentId}";
+                $componentUrl = "{$baseUrl}/rest/api/3/component/{$featureId}";
                 $componentResponse = $this->client->get($componentUrl);
                 $componentDetails = json_decode($componentResponse->getBody(), true);
 
                 // Fetch epics
-                $epicJql = "project = '{$projectKey}' AND component = '{$componentId}' AND issuetype = 'Epic'";
+                $epicJql = "project = '{$projectKey}' AND component = '{$featureId}' AND issuetype = 'Epic'";
                 $epicResponse = $this->client->get("{$baseUrl}/rest/api/3/search", [
                     'query' => ['jql' => $epicJql, 'maxResults' => 1000]
                 ]);
@@ -236,14 +285,14 @@ class JiraService
                 });
 
                 // Fetch bugs
-                $bugJql = "project = '{$projectKey}' AND component = '{$componentId}' AND issuetype = 'Bug'";
+                $bugJql = "project = '{$projectKey}' AND component = '{$featureId}' AND issuetype = 'Bug'";
                 $bugResponse = $this->client->get("{$baseUrl}/rest/api/3/search", [
                     'query' => ['jql' => $bugJql, 'maxResults' => 1000]
                 ]);
                 $bugs = json_decode($bugResponse->getBody(), true)['issues'] ?? [];
 
                 // Fetch requests
-                $requestJql = "project = '{$projectKey}' AND component = '{$componentId}' AND issuetype = 'Request'";
+                $requestJql = "project = '{$projectKey}' AND component = '{$featureId}' AND issuetype = 'Request'";
                 $requestResponse = $this->client->get("{$baseUrl}/rest/api/3/search", [
                     'query' => ['jql' => $requestJql, 'maxResults' => 1000]
                 ]);

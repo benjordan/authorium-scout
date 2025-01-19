@@ -16,14 +16,14 @@ class ReleaseController extends Controller
     }
 
     // Show unreleased releases (Homepage)
-    public function unreleasedReleases()
+    public function index()
     {
         $releases = $this->jira->getUnreleasedReleases();
         return view('releases.index', compact('releases'));
     }
 
     // Show Critical and P0 epics in a release
-    public function criticalEpics($releaseKey)
+    public function show($releaseKey)
     {
         // Fetch release details from Jira
         $release = $this->jira->getReleaseDetails($releaseKey); // Ensure this method fetches the release details, including the name
@@ -47,18 +47,10 @@ class ReleaseController extends Controller
         });
 
         // Pass $epics, $releaseKey, and $releaseName to the view
-        return view('releases.epics', [
+        return view('releases.show', [
             'epics' => $epics,
             'releaseKey' => $releaseKey,
             'releaseName' => $release['name'] ?? $releaseKey, // Use the release name or fallback to the key if the name is unavailable
         ]);
-    }
-
-    // Show epic details with child issues
-    public function epicDetails($epicKey)
-    {
-        $epic = $this->jira->getEpic($epicKey);
-        $childIssues = $this->jira->getChildIssues($epicKey);
-        return view('releases.epic-details', compact('epic', 'childIssues'));
     }
 }
