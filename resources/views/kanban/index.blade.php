@@ -12,10 +12,10 @@
         </div>
 
         <!-- Kanban Board -->
-        <div class="flex-grow overflow-hidden">
+        <div class="flex-grow overflow-hidden bg-cover bg-center" style="background-image: url('/img/kanban-bg2.jpg');">
             <div class="flex overflow-x-auto h-full">
                 @foreach($kanbanData as $column)
-                    <div class="flex flex-col flex-shrink-0 w-72 h-full bg-gray-100">
+                    <div class="flex flex-col flex-shrink-0 w-72 h-full">
                         <!-- Column Header -->
                         <div class="flex items-center p-4">
                             <span class="text-sm font-semibold">{{ $column['release']['name'] }}</span>

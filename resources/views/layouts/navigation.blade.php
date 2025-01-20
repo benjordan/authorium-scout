@@ -3,8 +3,8 @@
         <!-- Logo -->
         <div class="flex items-center">
             <a href="/" class="text-xl font-bold text-gray-900">
-                <img src="/img/Release-Views-Logo.png" alt="Release Views Logo" class="h-8 w-auto mr-2 inline-block">
-                Release Views
+                <img src="/img/Atlas-Logo-Color-Small.png" alt="Atlas Logo" class="h-10 w-auto mr-2 inline-block">
+                Epics Atlas
             </a>
         </div>
 
