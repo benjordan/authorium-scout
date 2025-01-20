@@ -12,7 +12,7 @@
         </div>
 
         <!-- Kanban Board -->
-        <div class="flex-grow overflow-hidden bg-cover bg-center" style="background-image: url('/img/kanban-bg2.jpg');">
+        <div class="flex-grow overflow-hidden bg-repeat bg-center" style="background-image: url('/img/topographic-bg.png');">
             <div class="flex overflow-x-auto h-full">
                 @foreach($kanbanData as $column)
                     <div class="flex flex-col flex-shrink-0 w-72 h-full">
