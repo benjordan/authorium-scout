@@ -12,6 +12,23 @@
                     <h2 class="text-2xl font-bold text-brand-700">{{ $release['name'] }}</h2>
                     <p class="text-sm text-gray-500">Release Date: {{ $release['releaseDate'] ?? 'TBD' }}</p>
 
+                    <!-- Risk-Watch Epics -->
+                    <div>
+                        <h3 class="text-lg font-bold">Risk-Watch Epics</h3>
+                        <ul class="list-disc list-inside text-gray-700">
+                            @forelse($release['riskWatchEpics'] as $epic)
+                                <li>
+                                    <a href="{{ route('epics.show', $epic['key']) }}"
+                                    class="text-brand-600 hover:underline">
+                                        {{ $epic['fields']['summary'] }}
+                                    </a>
+                                </li>
+                            @empty
+                                <p class="text-gray-500 italic">No risk-watch epics found.</p>
+                            @endforelse
+                        </ul>
+                    </div>
+
                     <!-- Epics Table -->
                     <div>
                         <h3 class="text-lg mb-3 font-bold flex items-center">
@@ -95,23 +112,6 @@
                                 </a>
                             @endforeach
                         </div>
-                    </div>
-
-                    <!-- Risk-Watch Epics -->
-                    <div>
-                        <h3 class="text-lg font-bold">Risk-Watch Epics</h3>
-                        <ul class="list-disc list-inside text-gray-700">
-                            @forelse($release['riskWatchEpics'] as $epic)
-                                <li>
-                                    <a href="{{ route('epics.show', $epic['key']) }}"
-                                    class="text-brand-600 hover:underline">
-                                        {{ $epic['fields']['summary'] }}
-                                    </a>
-                                </li>
-                            @empty
-                                <p class="text-gray-500 italic">No risk-watch epics found.</p>
-                            @endforelse
-                        </ul>
                     </div>
                 </div>
             @endforeach
