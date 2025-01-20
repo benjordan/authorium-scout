@@ -1,8 +1,8 @@
 <x-app-layout>
     <div x-data="{ search: '' }" class="h-[calc(100vh-76px)] flex flex-col">
         <!-- Header -->
-        <div class="flex items-center justify-between px-6 py-4 bg-brand-800">
-            <h1 class="text-xl font-semibold text-gray-100">Kanban Board</h1>
+        <div class="flex items-center justify-between px-6 py-4 bg-gray-50 border shadow-lg">
+            <h1 class="text-xl font-semibold text-gray-900">Kanban Board</h1>
             <input
                 type="text"
                 x-model="search"

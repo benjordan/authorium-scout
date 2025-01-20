@@ -18,7 +18,7 @@
                     <span class="bg-red-200 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
                         Bugs: {{ $counts['bugs'] ?? 0 }}
                     </span>
-                    <span class="bg-blue-200 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                    <span class="bg-blue-200 text-brand-800 px-3 py-1 rounded-full text-sm font-medium">
                         Requests: {{ $counts['requests'] ?? 0 }}
                     </span>
                 </div>
@@ -35,7 +35,7 @@
                         @foreach ($epicsInRelease as $epic)
                             <li class="bg-gray-50 p-4 rounded shadow">
                                 <div class="flex justify-between items-center">
-                                    <a href="{{ route('epics.show', $epic['key'] ?? '') }}" class="font-bold text-blue-600">
+                                    <a href="{{ route('epics.show', $epic['key'] ?? '') }}" class="font-bold text-brand-600">
                                         {{ $epic['fields']['summary'] ?? 'No summary available' }}
                                     </a>
                                     <a href="https://cityinnovate.atlassian.net/browse/{{ $epic['key'] }}"
@@ -86,7 +86,7 @@
                     @foreach ($requests as $request)
                         <li class="bg-blue-50 p-4 rounded shadow">
                             <div class="flex justify-between items-center">
-                                <p class="font-bold text-blue-800">
+                                <p class="font-bold text-brand-800">
                                     {{ $request['fields']['summary'] ?? 'No summary available' }}
                                 </p>
                                 <a href="https://cityinnovate.atlassian.net/browse/{{ $request['key'] }}"

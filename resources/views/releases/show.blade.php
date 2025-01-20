@@ -29,7 +29,7 @@
                                 <tr class="odd:bg-gray-50 even:bg-white">
                                     <td class="border px-4 py-2">
                                         <a href="https://cityinnovate.atlassian.net/browse/{{ $issue['key'] }}"
-                                           class="text-blue-600 hover:underline"
+                                           class="text-brand-600 hover:underline"
                                            target="_blank">
                                             {{ $issue['fields']['summary'] ?? 'No summary available' }}
                                         </a>
