@@ -86,7 +86,7 @@ class JiraService
                 $response = $this->client->get("/rest/api/3/search", [
                     'query' => [
                         'jql' => "fixVersion = '{$releaseKey}' AND priority IN ({$priorityFilter}) AND issuetype = Epic ORDER BY summary ASC",
-                        'fields' => 'summary,priority,status,customfield_10473',
+                        'fields' => 'summary,priority,status,customfield_10473,labels,customfield_10506',
                     ],
                 ]);
 
@@ -108,7 +108,7 @@ class JiraService
                 $response = $this->client->get("/rest/api/3/search", [
                     'query' => [
                         'jql' => "fixVersion = '{$releaseKey}' AND issuetype = Epic ORDER BY summary ASC",
-                        'fields' => 'summary,priority,status,customfield_10473',
+                        'fields' => 'summary,priority,status,customfield_10473,labels,customfield_10506',
                     ],
                 ]);
                 return json_decode($response->getBody(), true)['issues'];
@@ -126,14 +126,31 @@ class JiraService
         return $this->cachedApiCall(
             $cacheKey,
             function () use ($releaseKey) {
-                $response = $this->client->get("/rest/api/3/search", [
-                    'query' => [
-                        'jql' => "fixVersion = '{$releaseKey}' ORDER BY status ASC",
-                        'fields' => 'status',
-                        'maxResults' => 1000,
-                    ],
-                ]);
-                return json_decode($response->getBody(), true)['issues'];
+                $startAt = 0;
+                $maxResults = 100;
+                $allIssues = [];
+
+                do {
+                    $response = $this->client->get("/rest/api/3/search", [
+                        'query' => [
+                            'jql' => "fixVersion = '{$releaseKey}' ORDER BY created DESC",
+                            'fields' => 'summary,priority,status,labels',
+                            'startAt' => $startAt,
+                            'maxResults' => $maxResults,
+                        ],
+                    ]);
+
+                    $data = json_decode($response->getBody(), true);
+
+                    if (!isset($data['issues'])) {
+                        break; // Exit if there are no issues
+                    }
+
+                    $allIssues = array_merge($allIssues, $data['issues']);
+                    $startAt += $maxResults;
+                } while (count($data['issues']) === $maxResults);
+
+                return $allIssues;
             }
         );
     }

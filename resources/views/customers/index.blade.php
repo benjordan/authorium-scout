@@ -1,7 +1,9 @@
 <x-app-layout>
-    <div class="flex items-center justify-between px-6 py-4 bg-gray-800">
-        <h1 class="text-xl font-bold text-gray-100">Customers</h1>
-    </div>
+    <x-slot name="header">
+        <h1 class="text-xl font-semibold text-gray-100">
+            {{ __('Customers') }}
+        </h1>
+    </x-slot>
 
     <div class="container mx-auto py-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

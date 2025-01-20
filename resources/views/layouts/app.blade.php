@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css">
         <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
         <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
+        <script src="https://kit.fontawesome.com/7669ab7fa3.js" crossorigin="anonymous"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
@@ -22,8 +23,8 @@
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <header class="bg-brand-800 shadow">
+                    <div class="flex items-center justify-between px-6 py-4">
                         {{ $header }}
                     </div>
                 </header>

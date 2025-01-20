@@ -20,7 +20,7 @@
                 <!-- Column Header -->
                 <div class="flex items-center h-12 px-4 bg-white border-b shadow">
                     <span class="text-sm font-semibold">{{ column.release.name }}</span>
-                    <span class="ml-2 text-sm font-semibold text-indigo-500 bg-white rounded px-2 py-0.5">
+                    <span class="ml-2 text-sm font-semibold text-brand-500 bg-white rounded px-2 py-0.5">
                         {{ column.epics.length }}
                     </span>
                 </div>
@@ -34,7 +34,7 @@
                     >
                         <a :href="'/epics/' + epic.key">
                             <span
-                                class="flex items-center h-6 px-3 text-xs font-semibold text-indigo-500 bg-indigo-100 rounded-full"
+                                class="flex items-center h-6 px-3 text-xs font-semibold text-brand-500 bg-brand-100 rounded-full"
                             >
                                 {{ epic.fields.priority?.name || 'None' }}
                             </span>

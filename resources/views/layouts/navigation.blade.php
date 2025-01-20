@@ -14,6 +14,7 @@
             <a href="{{ route('customers.index') }}" class="text font-medium text-gray-700 hover:text-gray-900">Customers</a>
             <a href="{{ route('features.index') }}" class="text font-medium text-gray-700 hover:text-gray-900">Features</a>
             <a href="{{ route('releases.index') }}" class="text font-medium text-gray-700 hover:text-gray-900">Releases</a>
+            <a href="{{ route('epics.index') }}" class="text font-medium text-gray-700 hover:text-gray-900">Epics</a>
             <a href="{{ route('kanban') }}" class="text font-medium text-gray-700 hover:text-gray-900">Kanban</a>
         </nav>
 

@@ -10,7 +10,7 @@ use App\Http\Controllers\KanbanController;
 use App\Http\Controllers\ReleaseController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth/login');
 });
 
 Route::get('/dashboard', function () {
@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/releases', [ReleaseController::class, 'index'])->name('releases.index');
     Route::get('/releases/{id}', [ReleaseController::class, 'show'])->name('releases.show');
+    Route::get('/releases/{releaseKey}/{type}/{status}', [ReleaseController::class, 'statusDetails'])->name('releases.statusDetails');
 });
 
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');

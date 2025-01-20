@@ -1,30 +1,29 @@
 <x-app-layout>
     <div class="container mx-auto py-6 space-y-8">
-        <!-- Header -->
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="text-3xl font-bold">Open Epics</h1>
-            <span class="inline-flex items-center px-3 py-1 text-sm font-medium bg-indigo-100 text-indigo-800 rounded">
+        <x-slot name="header">
+            <h1 class="text-xl font-semibold text-gray-100">Open Epics</h1>
+            <span class="inline-flex items-center px-3 py-1 text-sm font-medium bg-brand-100 text-brand-800 rounded">
                 {{ count($epics) }} Epics
             </span>
-        </div>
+        </x-slot>
 
         <!-- Epic Table -->
         <div class="bg-white p-6 rounded shadow">
             <table id="epicsTable" class="stripe">
                 <thead>
-                    <tr class="bg-gray-200 text-gray-700">
-                        <th class="border px-4 py-2">Summary</th>
-                        <th class="border px-4 py-2">Priority</th>
-                        <th class="border px-4 py-2">Customer Commitment</th>
-                        <th class="border px-4 py-2">Size</th>
-                        <th class="border px-4 py-2">Parent</th>
+                    <tr class="bg-gray-100 text-gray-700">
+                        <th class="border px-4 py-2 text-sm">Summary</th>
+                        <th class="border px-4 py-2 text-sm">Priority</th>
+                        <th class="border px-4 py-2 text-sm">Customer Commitment</th>
+                        <th class="border px-4 py-2 text-sm">Size</th>
+                        <th class="border px-4 py-2 text-sm">Parent</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($epics as $epic)
                         <tr>
                             <td class="border px-4 py-2">
-                                <a href="{{ route('epics.show', $epic['key']) }}" class="text-blue-600 hover:underline">
+                                <a href="{{ route('epics.show', $epic['key']) }}" class="text-brand-600 hover:underline">
                                     {{ $epic['fields']['summary'] }}
                                 </a>
                             </td>

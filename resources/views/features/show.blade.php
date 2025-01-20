@@ -12,7 +12,7 @@
                     @endif
                 </div>
                 <div class="space-x-4">
-                    <span class="bg-green-200 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                    <span class="bg-brand-200 text-brand-800 px-3 py-1 rounded-full text-sm font-medium">
                         Epics: {{ $counts['epics'] ?? 0 }}
                     </span>
                     <span class="bg-red-200 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
