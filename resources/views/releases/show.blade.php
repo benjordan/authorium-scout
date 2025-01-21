@@ -29,7 +29,7 @@
                         <tr class="odd:bg-gray-50 even:bg-white">
                             <!-- Epic Name -->
                             <td class="border px-4 py-2">
-                                <a href="{{ route('epics.show', $epic['key']) }}" class="text-blue-600 hover:underline">
+                                <a href="{{ route('epics.show', $epic['key']) }}" class="text-brand-600 hover:underline">
                                     {{ $epic['fields']['summary'] }}
                                 </a>
                             </td>
