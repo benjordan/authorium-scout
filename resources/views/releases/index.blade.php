@@ -12,7 +12,7 @@
             @foreach($releases as $release)
                 <div class="bg-white p-6 rounded shadow space-y-4">
                     <!-- Release Title -->
-                    <a href="{{ route('releases.show', $release['id']) }}"><h2 class="text-2xl font-bold text-gray-800">{{ $release['name'] }}</h2></a>
+                    <a href="{{ route('releases.show', $release['id']) }}"><h2 class="text-2xl font-bold text-brand-600">{{ $release['name'] }}</h2></a>
                     <p class="text-sm text-gray-500">Release Date: {{ $release['releaseDate'] ?? 'TBD' }}</p>
                     <!-- Epics Table -->
                     <div>
