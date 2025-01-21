@@ -2,7 +2,7 @@
 
     <x-slot name="header">
         <h1 class="text-xl font-semibold text-gray-900">
-            {{ __('Features') }}
+            {{ __('Components') }}
         </h1>
     </x-slot>
 

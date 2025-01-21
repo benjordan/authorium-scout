@@ -3,12 +3,15 @@
         <!-- Header -->
         <div class="flex items-center justify-between px-6 py-4 bg-gray-50 border shadow-lg">
             <h1 class="text-xl font-semibold text-gray-900">Kanban Board</h1>
-            <input
-                type="text"
-                x-model="search"
-                placeholder="Search Epics..."
-                class="w-64 px-3 py-1.5 text-sm border border-gray-300 rounded"
-            />
+            <span>
+                <a href="{{ route('releases.index') }}"><button type="button" class="rounded px-2 py-1 text-sm font-semibold border border-brand-500 text-brand-600 shadow-sm hover:bg-brand-100">Card View</button></a>
+                <input
+                    type="text"
+                    x-model="search"
+                    placeholder="Search Epics..."
+                    class="w-64 px-3 py-1.5 ml-2 text-sm border border-gray-300 rounded"
+                />
+            </span>
         </div>
 
         <!-- Kanban Board -->
@@ -19,7 +22,7 @@
                         <!-- Column Header -->
                         <div class="flex items-center p-4">
                             <span class="text-sm font-semibold">{{ $column['release']['name'] }}</span>
-                            <span class="ml-2 text-sm font-semibold text-brand-500 bg-white rounded px-2 py-0.5">
+                            <span class="ml-2 text-sm font-semibold text-gray-700 bg-white rounded px-2 py-0.5">
                                 {{ count($column['epics']) }}
                             </span>
                         </div>

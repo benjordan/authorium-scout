@@ -3,7 +3,7 @@
         <!-- Logo -->
         <div class="flex items-center">
             <a href="/" class="text-xl font-bold text-gray-900">
-                <img src="/img/Atlas-Logo-Color-Small.png" alt="Atlas Logo" class="h-10 w-auto mr-2 inline-block">
+                <img src="/img/Atlas-Logo-Color-Small.png" alt="Scout Logo" class="h-10 w-auto mr-2 inline-block">
                 Scout
             </a>
         </div>
@@ -12,10 +12,9 @@
         <nav class="flex-1 hidden md:flex items-center justify-center space-x-8">
             <a href="{{ route('dashboard') }}" class="text font-medium text-gray-700 hover:text-gray-900">Dashboard</a>
             <a href="{{ route('customers.index') }}" class="text font-medium text-gray-700 hover:text-gray-900">Customers</a>
-            <a href="{{ route('features.index') }}" class="text font-medium text-gray-700 hover:text-gray-900">Features</a>
+            <a href="{{ route('features.index') }}" class="text font-medium text-gray-700 hover:text-gray-900">Components</a>
             <a href="{{ route('releases.index') }}" class="text font-medium text-gray-700 hover:text-gray-900">Releases</a>
             <a href="{{ route('epics.index') }}" class="text font-medium text-gray-700 hover:text-gray-900">Epics</a>
-            <a href="{{ route('kanban') }}" class="text font-medium text-gray-700 hover:text-gray-900">Kanban</a>
         </nav>
 
         <!-- User Dropdown -->

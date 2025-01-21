@@ -3,15 +3,17 @@
         <h1 class="text-xl font-semibold text-gray-900">
             {{ __('Releases Overview') }}
         </h1>
+        <span>
+            <a href="{{ route('kanban') }}"><button type="button" class="rounded px-2 py-1 text-sm font-semibold border border-brand-500 text-brand-600 shadow-sm hover:bg-brand-100">Kanban View</button></a>
+        </span>
     </x-slot>
     <div class="container mx-auto py-6 space-y-8">
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             @foreach($releases as $release)
                 <div class="bg-white p-6 rounded shadow space-y-4">
                     <!-- Release Title -->
-                    <h2 class="text-2xl font-bold text-gray-800">{{ $release['name'] }}</h2>
+                    <a href="{{ route('releases.show', $release['id']) }}"><h2 class="text-2xl font-bold text-gray-800">{{ $release['name'] }}</h2></a>
                     <p class="text-sm text-gray-500">Release Date: {{ $release['releaseDate'] ?? 'TBD' }}</p>
-
                     <!-- Epics Table -->
                     <div>
                         <h3 class="text-lg mb-3 font-bold flex items-center">

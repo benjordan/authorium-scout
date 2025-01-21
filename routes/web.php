@@ -28,8 +28,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/epics', [EpicController::class, 'index'])->name('epics.index');
     Route::get('/epics/{key}', [EpicController::class, 'show'])->name('epics.show');
 
-    Route::get('/features', [FeatureController::class, 'index'])->name('features.index');
-    Route::get('/features/{id}', [FeatureController::class, 'show'])->name('features.show');
+    Route::get('/components', [FeatureController::class, 'index'])->name('features.index');
+    Route::get('/components/{id}', [FeatureController::class, 'show'])->name('features.show');
 
     Route::get('/kanban', [KanbanController::class, 'index'])->name('kanban');
     Route::get('/kanban/full', [KanbanController::class, 'full'])->name('kanban-full');
