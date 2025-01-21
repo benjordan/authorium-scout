@@ -9,29 +9,8 @@
             @foreach($releases as $release)
                 <div class="bg-white p-6 rounded shadow space-y-4">
                     <!-- Release Title -->
-                    <h2 class="text-2xl font-bold text-brand-700">{{ $release['name'] }}</h2>
+                    <h2 class="text-2xl font-bold text-gray-800">{{ $release['name'] }}</h2>
                     <p class="text-sm text-gray-500">Release Date: {{ $release['releaseDate'] ?? 'TBD' }}</p>
-
-                    <!-- Risk-Watch Epics -->
-                    <div>
-                        <h3 class="text-lg font-bold mb-4">Risk-Watch Epics</h3>
-                        @if (!empty($release['riskWatchEpics']))
-                            <div class="space-y-1">
-                                @foreach ($release['riskWatchEpics'] as $epic)
-                                    <a href="{{ route('epics.show', $epic['key']) }}" class="bg-white shadow p-2 flex justify-between items-center">
-                                        <h4 class="text-sm font-medium text-gray-900">
-                                            {{ $epic['fields']['summary'] }}
-                                        </h4>
-                                        <span class="text-gray-300 hover:text-brand-800">
-                                            <i class="fas fa-eye"></i>
-                                        </span>
-                                    </a>
-                                @endforeach
-                            </div>
-                        @else
-                            <p class="text-gray-500 italic">No risk-watch epics found.</p>
-                        @endif
-                    </div>
 
                     <!-- Epics Table -->
                     <div>
@@ -72,7 +51,7 @@
                     <!-- Issues Table -->
                     <div class="mt-6">
                         <h3 class="text-lg mb-3 font-bold flex items-center">
-                            Issues
+                            Tickets
                             <span class="ml-2 px-3 py-1 text-sm font-medium bg-gray-100 text-gray-800 rounded">
                                 {{ $release['issueCount'] }}
                             </span>
@@ -116,6 +95,27 @@
                                 </a>
                             @endforeach
                         </div>
+                    </div>
+
+                    <!-- Risk-Watch Epics -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-4">Risk-Watch Epics</h3>
+                        @if (!empty($release['riskWatchEpics']))
+                            <div class="space-y-1">
+                                @foreach ($release['riskWatchEpics'] as $epic)
+                                    <a href="{{ route('epics.show', $epic['key']) }}" class="bg-white shadow p-2 flex justify-between items-center">
+                                        <h4 class="text-sm font-medium text-gray-900">
+                                            {{ $epic['fields']['summary'] }}
+                                        </h4>
+                                        <span class="text-gray-300 hover:text-brand-800">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-gray-500 italic">No risk-watch epics found.</p>
+                        @endif
                     </div>
                 </div>
             @endforeach
