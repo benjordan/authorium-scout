@@ -27,10 +27,14 @@
                         <!-- Cards -->
                         <div class="flex-grow overflow-y-auto px-4 pb-6">
                             @foreach($column['epics'] as $epic)
+                                @php
+                                    $isRiskWatch = isset($epic['fields']['labels']) && in_array('risk-watch', $epic['fields']['labels']);
+                                @endphp
                                 <a href="/epics/{{ $epic['key'] }}"
                                     x-show="'{{ strtolower($epic['fields']['summary']) }}'.includes(search.toLowerCase()) ||
                                             '{{ strtolower($epic['key']) }}'.includes(search.toLowerCase())"
-                                    class="relative flex flex-col items-start p-4 mb-2 bg-white rounded-lg shadow cursor-pointer bg-opacity-90 group hover:bg-opacity-100"
+                                    class="relative flex flex-col items-start p-4 mb-2 rounded-lg shadow cursor-pointer bg-opacity-90 group hover:bg-opacity-100
+                                        {{ $isRiskWatch ? 'bg-red-50' : 'bg-white' }}"
                                 >
                                     <!-- Customer Commitment Marker -->
                                     @php

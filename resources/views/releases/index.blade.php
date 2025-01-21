@@ -14,19 +14,23 @@
 
                     <!-- Risk-Watch Epics -->
                     <div>
-                        <h3 class="text-lg font-bold">Risk-Watch Epics</h3>
-                        <ul class="list-disc list-inside text-gray-700">
-                            @forelse($release['riskWatchEpics'] as $epic)
-                                <li>
-                                    <a href="{{ route('epics.show', $epic['key']) }}"
-                                    class="text-brand-600 hover:underline">
-                                        {{ $epic['fields']['summary'] }}
+                        <h3 class="text-lg font-bold mb-4">Risk-Watch Epics</h3>
+                        @if (!empty($release['riskWatchEpics']))
+                            <div class="space-y-1">
+                                @foreach ($release['riskWatchEpics'] as $epic)
+                                    <a href="{{ route('epics.show', $epic['key']) }}" class="bg-white shadow p-2 flex justify-between items-center">
+                                        <h4 class="text-sm font-medium text-gray-900">
+                                            {{ $epic['fields']['summary'] }}
+                                        </h4>
+                                        <span class="text-gray-300 hover:text-brand-800">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
                                     </a>
-                                </li>
-                            @empty
-                                <p class="text-gray-500 italic">No risk-watch epics found.</p>
-                            @endforelse
-                        </ul>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-gray-500 italic">No risk-watch epics found.</p>
+                        @endif
                     </div>
 
                     <!-- Epics Table -->
