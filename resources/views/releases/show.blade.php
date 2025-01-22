@@ -18,6 +18,7 @@
             <table id="epicsTable" class="table-auto w-full border border-gray-200">
                 <thead>
                     <tr class="bg-gray-100 text-gray-600 text-sm">
+                        <th class="border px-4 py-2 text-left">Key</th>
                         <th class="border px-4 py-2 text-left">Name</th>
                         <th class="border px-4 py-2 text-left">Status</th>
                         <th class="border px-4 py-2 text-left">Priority</th>
@@ -27,6 +28,10 @@
                 <tbody>
                     @forelse($epics as $epic)
                         <tr class="odd:bg-gray-50 even:bg-white">
+                            <!-- Epic Key -->
+                            <td class="border px-4 py-2 text-sm">
+                                {{ $epic['key'] }}
+                            </td>
                             <!-- Epic Name -->
                             <td class="border px-4 py-2">
                                 <a href="{{ route('epics.show', $epic['key']) }}" class="text-brand-600 hover:underline">

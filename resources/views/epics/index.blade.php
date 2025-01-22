@@ -12,6 +12,7 @@
             <table id="epicsTable" class="stripe">
                 <thead>
                     <tr class="bg-gray-100 text-gray-700">
+                        <th class="border px-4 py-2 text-sm">Key</th>
                         <th class="border px-4 py-2 text-sm">Summary</th>
                         <th class="border px-4 py-2 text-sm">Priority</th>
                         <th class="border px-4 py-2 text-sm">Customer Commitment</th>
@@ -22,6 +23,9 @@
                 <tbody>
                     @foreach($epics as $epic)
                         <tr>
+                            <td class="border px-4 py-2 text-sm">
+                                {{ $epic['key'] }}
+                            </td>
                             <td class="border px-4 py-2 font-medium">
                                 <a href="{{ route('epics.show', $epic['key']) }}" class="text-brand-600 hover:underline">
                                     {{ $epic['fields']['summary'] }}
