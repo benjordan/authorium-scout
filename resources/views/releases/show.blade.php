@@ -20,6 +20,7 @@
                     <tr class="bg-gray-100 text-gray-600 text-sm">
                         <th class="border px-4 py-2 text-left">Key</th>
                         <th class="border px-4 py-2 text-left">Name</th>
+                        <th class="border px-4 py-2 text-left">Size</th>
                         <th class="border px-4 py-2 text-left">Status</th>
                         <th class="border px-4 py-2 text-left">Priority</th>
                         <th class="border px-4 py-2 text-left">Customer Commitment</th>
@@ -37,6 +38,10 @@
                                 <a href="{{ route('epics.show', $epic['key']) }}" class="text-brand-600 hover:underline">
                                     {{ $epic['fields']['summary'] }}
                                 </a>
+                            </td>
+                            <!-- Size -->
+                            <td class="border px-4 py-2 text-sm">
+                                {{ $epic['fields']['customfield_10507']['value'] ?? '--' }}
                             </td>
                             <!-- Status -->
                             <td class="border px-4 py-2">

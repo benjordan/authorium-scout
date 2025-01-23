@@ -108,7 +108,7 @@ class JiraService
                 $response = $this->client->get("/rest/api/3/search", [
                     'query' => [
                         'jql' => "fixVersion = '{$releaseKey}' AND issuetype = Epic ORDER BY summary ASC",
-                        'fields' => 'summary,priority,status,customfield_10473,labels,customfield_10506',
+                        'fields' => 'summary,priority,status,customfield_10473,labels,customfield_10506,customfield_10507',
                     ],
                 ]);
                 return json_decode($response->getBody(), true)['issues'];
