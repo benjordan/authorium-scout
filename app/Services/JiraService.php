@@ -201,7 +201,7 @@ class JiraService
             function () use ($epicKey) {
                 $response = $this->client->get("/rest/api/3/issue/{$epicKey}", [
                     'query' => [
-                        'fields' => 'summary,priority,status,customfield_10473,description',
+                        'fields' => 'summary,priority,status,customfield_10473,customfield_10506,description,components,fixVersions',
                         'expand' => 'renderedFields',
                     ],
                 ]);

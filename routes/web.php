@@ -39,6 +39,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/releases/{releaseKey}/{type}/{status}', [ReleaseController::class, 'statusDetails'])->name('releases.statusDetails');
 });
 
+Route::get('/flush-cache', function () {
+
+    // Clear various caches
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+
+    return response()->json(['message' => 'Cache cleared successfully.'], 200);
+})->name('flush.cache');
+
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
