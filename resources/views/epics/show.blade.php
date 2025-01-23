@@ -49,6 +49,25 @@
                             <span class="text-gray-600 font-medium">Status:</span>
                             <span class="font-semibold">{{ $epic['fields']['status']['name'] ?? 'Unknown' }}</span>
                         </div>
+                        <!-- Priority -->
+                        <div class="flex justify-between py-2">
+                            <span class="text-gray-600 font-medium">Priority:</span>
+                            <span class="font-semibold">
+                                @php
+                                    $priority = $epic['fields']['priority']['name'] ?? 'Unknown';
+                                    $priorityColor = match ($priority) {
+                                        'Critical' => 'bg-red-100 text-red-800',
+                                        'P0' => 'bg-orange-100 text-orange-800',
+                                        'P1' => 'bg-yellow-100 text-yellow-800',
+                                        'P2' => 'bg-blue-100 text-blue-800',
+                                        default => 'bg-gray-100 text-gray-800',
+                                    };
+                                @endphp
+                                <span class="inline-block px-3 py-1 text-sm font-medium rounded {{ $priorityColor }}">
+                                    {{ $priority }}
+                                </span>
+                            </span>
+                        </div>
                         <!-- Fix Version -->
                         <div class="flex justify-between py-2">
                             <span class="text-gray-600 font-medium mr-2">Fix Version:</span>

@@ -76,7 +76,7 @@
                 paging: true,
                 pageLength: 50,
                 searching: true,
-                order: [[2, 'asc']], // Default sort by status
+                order: [[4, 'asc']], // Default sort by status
             });
         });
     </script>
