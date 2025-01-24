@@ -21,81 +21,84 @@
             </div>
         </div>
 
-        <!-- Epics by Fix Version -->
+        <!-- Grouped Items by Fix Version -->
         <div>
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Features by Fix Version</h2>
-            @if (!empty($epics))
-                @foreach ($epics as $fixVersion => $epicsInVersion)
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Items by Fix Version</h2>
+            @if (!empty($groupedItems))
+                @foreach ($groupedItems as $fixVersion => $items)
                     <div class="bg-white p-4 rounded shadow mb-4">
                         <h3 class="text-lg font-semibold text-gray-700">{{ $fixVersion }}</h3>
                         <ul class="mt-3 space-y-3">
-                            @foreach ($epicsInVersion as $epic)
-                                <li class="bg-gray-50 p-4 rounded shadow">
+                            @php
+                                // Sort items by type: Bug, then Epic, then Request
+                                usort($items, function ($a, $b) {
+                                    $typeOrder = ['Bug' => 1, 'Epic' => 2, 'Request' => 3];
+                                    $typeA = $typeOrder[$a['fields']['issuetype']['name']] ?? 99;
+                                    $typeB = $typeOrder[$b['fields']['issuetype']['name']] ?? 99;
+                                    return $typeA <=> $typeB;
+                                });
+                            @endphp
+                            @foreach ($items as $item)
+                                <li class="p-4 rounded shadow {{ $item['fields']['issuetype']['name'] === 'Bug' ? 'bg-red-50' : ($item['fields']['issuetype']['name'] === 'Request' ? 'bg-blue-50' : 'bg-gray-50') }}">
                                     <div class="flex justify-between items-center">
-                                        <a href="{{ route('epics.show', $epic['key'] ?? '') }}" class="font-bold text-brand-600">
-                                            {{ $epic['fields']['summary'] ?? 'No summary available' }}
+                                        <a href="{{ route('epics.show', $item['key']) }}" class="font-bold {{ $item['fields']['issuetype']['name'] === 'Bug' ? 'text-red-800' : ($item['fields']['issuetype']['name'] === 'Request' ? 'text-blue-800' : 'text-brand-600') }}">
+                                            {{ $item['fields']['summary'] ?? 'No summary available' }}
                                         </a>
-                                        <a href="https://cityinnovate.atlassian.net/browse/{{ $epic['key'] }}"
-                                           class="text-xs text-gray-600 underline" target="_blank">
+                                        <a href="https://cityinnovate.atlassian.net/browse/{{ $item['key'] }}"
+                                        class="text-xs text-gray-600 underline" target="_blank">
                                             View on Jira
                                         </a>
                                     </div>
-                                    <p class="text-sm text-gray-500 mt-1">Key: {{ $epic['key'] ?? 'No key available' }}</p>
+                                    <p class="text-sm text-gray-500 mt-1">
+                                        Key: {{ $item['key'] ?? 'No key available' }} |
+                                        Type: {{ $item['fields']['issuetype']['name'] }} |
+                                        Priority: {{ $item['fields']['priority']['name'] ?? 'Unknown' }}
+                                    </p>
                                 </li>
                             @endforeach
                         </ul>
                     </div>
                 @endforeach
             @else
-                <p class="text-gray-600">No epics found for this customer.</p>
+                <p class="text-gray-600">No items found for this customer.</p>
             @endif
         </div>
 
-        <!-- Bugs -->
+        <!-- Ungrouped Items -->
         <div>
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Bugs</h2>
-            @if (!empty($bugs))
-                <ul class="space-y-3">
-                    @foreach ($bugs as $bug)
-                        <li class="bg-red-50 p-4 rounded shadow">
-                            <div class="flex justify-between items-center">
-                                <p class="font-bold text-red-800">
-                                    {{ $bug['fields']['summary'] ?? 'No summary available' }}
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Items Without a Fix Version</h2>
+            @if (!empty($unassignedItems))
+                <div class="bg-white p-4 rounded shadow mb-4">
+                    <ul class="space-y-3">
+                        @php
+                            // Sort unassigned items by type: Bug, then Epic, then Request
+                            usort($unassignedItems, function ($a, $b) {
+                                $typeOrder = ['Bug' => 1, 'Epic' => 2, 'Request' => 3];
+                                $typeA = $typeOrder[$a['fields']['issuetype']['name']] ?? 99;
+                                $typeB = $typeOrder[$b['fields']['issuetype']['name']] ?? 99;
+                                return $typeA <=> $typeB;
+                            });
+                        @endphp
+                        @foreach ($unassignedItems as $item)
+                            <li class="p-4 rounded shadow {{ $item['fields']['issuetype']['name'] === 'Bug' ? 'bg-red-50' : ($item['fields']['issuetype']['name'] === 'Request' ? 'bg-blue-50' : 'bg-gray-50') }}">
+                                <div class="flex justify-between items-center">
+                                    <a href="{{ route('epics.show', $item['key']) }}" class="font-bold {{ $item['fields']['issuetype']['name'] === 'Bug' ? 'text-red-800' : ($item['fields']['issuetype']['name'] === 'Request' ? 'text-blue-800' : 'text-brand-600') }}">
+                                        {{ $item['fields']['summary'] ?? 'No summary available' }}
+                                    </a>
+                                    <a href="https://cityinnovate.atlassian.net/browse/{{ $item['key'] }}"
+                                       class="text-xs text-gray-600 underline" target="_blank">
+                                        View on Jira
+                                    </a>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    Key: {{ $item['key'] ?? 'No key available' }} | Type: {{ $item['fields']['issuetype']['name'] }}
                                 </p>
-                                <a href="https://cityinnovate.atlassian.net/browse/{{ $bug['key'] }}"
-                                   class="text-xs text-gray-600 underline" target="_blank">
-                                    View on Jira
-                                </a>
-                            </div>
-                        </li>
-                    @endforeach
-                </ul>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
             @else
-                <p class="text-gray-600">No bugs for this customer.</p>
-            @endif
-        </div>
-
-        <!-- Requests -->
-        <div>
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Requests</h2>
-            @if (!empty($requests))
-                <ul class="space-y-3">
-                    @foreach ($requests as $request)
-                        <li class="bg-blue-50 p-4 rounded shadow">
-                            <div class="flex justify-between items-center">
-                                <p class="font-bold text-brand-800">
-                                    {{ $request['fields']['summary'] ?? 'No summary available' }}
-                                </p>
-                                <a href="https://cityinnovate.atlassian.net/browse/{{ $request['key'] }}"
-                                   class="text-xs text-gray-600 underline" target="_blank">
-                                    View on Jira
-                                </a>
-                            </div>
-                        </li>
-                    @endforeach
-                </ul>
-            @else
-                <p class="text-gray-600">No requests for this customer.</p>
+                <p class="text-gray-600">No ungrouped items found for this customer.</p>
             @endif
         </div>
     </div>

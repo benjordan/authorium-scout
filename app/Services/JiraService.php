@@ -368,15 +368,13 @@ class JiraService
         return $this->cachedApiCall($cacheKey, function () use ($customerId) {
             $baseUrl = config('services.jira.base_url');
             $projectKey = config('services.jira.project_key');
-            $customFieldKey = 'Customers Related to Commitment';
 
-            if (empty($baseUrl) || empty($projectKey) || empty($customFieldKey)) {
-                throw new \Exception('JIRA_BASE_URL, projectKey, or customFieldKey is not properly configured.');
+            if (empty($baseUrl) || empty($projectKey)) {
+                throw new \Exception('JIRA configuration is not properly set in services.php.');
             }
 
             // Fetch all available customers
-            $customFieldContextId = '10676'; // Replace with the actual context ID
-            $customerOptionsUrl = "{$baseUrl}/rest/api/3/field/customfield_10506/context/{$customFieldContextId}/option";
+            $customerOptionsUrl = "{$baseUrl}/rest/api/3/field/customfield_10506/context/10676/option";
             $customerOptionsResponse = $this->client->get($customerOptionsUrl);
             $customerOptions = json_decode($customerOptionsResponse->getBody(), true)['values'] ?? [];
 
@@ -387,63 +385,76 @@ class JiraService
 
             $customerJql = "project = '{$projectKey}' AND cf[10506] = {$customerId}";
 
-            // Fetch epics
-            $epicJql = "{$customerJql} AND issuetype = 'Epic'";
-            $epicResponse = $this->client->get("{$baseUrl}/rest/api/3/search", [
-                'query' => ['jql' => $epicJql, 'maxResults' => 1000]
+            // Fetch all issues (epics, bugs, requests)
+            $response = $this->client->get("{$baseUrl}/rest/api/3/search", [
+                'query' => [
+                    'jql' => "{$customerJql} AND issuetype IN ('Epic', 'Bug', 'Request') ORDER BY created DESC",
+                    'fields' => 'summary,issuetype,fixVersions,priority',
+                    'maxResults' => 1000,
+                ],
             ]);
-            $epics = json_decode($epicResponse->getBody(), true)['issues'] ?? [];
 
-            // Group epics by fix version and sort by release date
-            $groupedEpics = [];
+            $issues = json_decode($response->getBody(), true)['issues'] ?? [];
+
+            // Initialize grouping arrays
+            $groupedItems = [];
+            $unassignedItems = [];
             $fixVersionDates = [];
 
-            foreach ($epics as $epic) {
-                $fixVersions = $epic['fields']['fixVersions'] ?? [];
+            // Group issues by fix version
+            foreach ($issues as $issue) {
+                $fixVersions = $issue['fields']['fixVersions'] ?? [];
                 if (empty($fixVersions)) {
-                    if (!isset($groupedEpics['Not in a Fix Version'])) {
-                        $groupedEpics['Not in a Fix Version'] = [];
-                        $fixVersionDates['Not in a Fix Version'] = '9999-12-31'; // Assign distant future date
-                    }
-                    $groupedEpics['Not in a Fix Version'][] = $epic;
+                    $unassignedItems[] = $issue;
                 } else {
                     foreach ($fixVersions as $fixVersion) {
                         $fixVersionName = $fixVersion['name'];
                         $fixVersionDate = $fixVersion['releaseDate'] ?? '9999-12-31';
                         $fixVersionDates[$fixVersionName] = $fixVersionDate;
 
-                        if (!isset($groupedEpics[$fixVersionName])) {
-                            $groupedEpics[$fixVersionName] = [];
+                        if (!isset($groupedItems[$fixVersionName])) {
+                            $groupedItems[$fixVersionName] = [];
                         }
-                        $groupedEpics[$fixVersionName][] = $epic;
+                        $groupedItems[$fixVersionName][] = $issue;
                     }
                 }
             }
 
-            // Sort grouped epics by release date
-            uksort($groupedEpics, function ($a, $b) use ($fixVersionDates) {
-                return strtotime($fixVersionDates[$a]) <=> strtotime($fixVersionDates[$b]);
+            // Sort grouped items by release date and priority within types
+            if (!empty($fixVersionDates)) {
+                uksort($groupedItems, function ($a, $b) use ($fixVersionDates) {
+                    return strtotime($fixVersionDates[$a]) <=> strtotime($fixVersionDates[$b]);
+                });
+
+                foreach ($groupedItems as &$items) {
+                    usort($items, function ($a, $b) {
+                        $typeOrder = ['Bug' => 1, 'Epic' => 2, 'Request' => 3];
+                        $priorityOrderA = $a['fields']['priority']['id'] ?? PHP_INT_MAX;
+                        $priorityOrderB = $b['fields']['priority']['id'] ?? PHP_INT_MAX;
+                        $typeA = $typeOrder[$a['fields']['issuetype']['name']] ?? 99;
+                        $typeB = $typeOrder[$b['fields']['issuetype']['name']] ?? 99;
+
+                        return $typeA <=> $typeB ?: $priorityOrderB <=> $priorityOrderA;
+                    });
+                }
+            }
+
+            // Sort unassigned items by type and priority
+            usort($unassignedItems, function ($a, $b) {
+                $typeOrder = ['Bug' => 1, 'Epic' => 2, 'Request' => 3];
+                $priorityOrderA = $a['fields']['priority']['id'] ?? PHP_INT_MAX;
+                $priorityOrderB = $b['fields']['priority']['id'] ?? PHP_INT_MAX;
+                $typeA = $typeOrder[$a['fields']['issuetype']['name']] ?? 99;
+                $typeB = $typeOrder[$b['fields']['issuetype']['name']] ?? 99;
+
+                return $typeA <=> $typeB ?: $priorityOrderB <=> $priorityOrderA;
             });
 
-            // Fetch bugs
-            $bugJql = "{$customerJql} AND issuetype = 'Bug'";
-            $bugResponse = $this->client->get("{$baseUrl}/rest/api/3/search", [
-                'query' => ['jql' => $bugJql, 'maxResults' => 1000]
-            ]);
-            $bugs = json_decode($bugResponse->getBody(), true)['issues'] ?? [];
-
-            // Fetch requests
-            $requestJql = "{$customerJql} AND issuetype = 'Request'";
-            $requestResponse = $this->client->get("{$baseUrl}/rest/api/3/search", [
-                'query' => ['jql' => $requestJql, 'maxResults' => 1000]
-            ]);
-            $requests = json_decode($requestResponse->getBody(), true)['issues'] ?? [];
-
-            // Add counts
+            // Add counts for the header
             $counts = [
-                'epics' => count($epics),
-                'bugs' => count($bugs),
-                'requests' => count($requests),
+                'epics' => count(array_filter($issues, fn($issue) => $issue['fields']['issuetype']['name'] === 'Epic')),
+                'bugs' => count(array_filter($issues, fn($issue) => $issue['fields']['issuetype']['name'] === 'Bug')),
+                'requests' => count(array_filter($issues, fn($issue) => $issue['fields']['issuetype']['name'] === 'Request')),
             ];
 
             return [
@@ -453,9 +464,9 @@ class JiraService
                     'description' => $customer['description'] ?? null,
                 ],
                 'counts' => $counts,
-                'epics' => $groupedEpics,
-                'bugs' => $bugs,
-                'requests' => $requests,
+                'groupedItems' => $groupedItems,
+                'unassignedItems' => $unassignedItems,
+                'fixVersionDates' => $fixVersionDates, // Return fixVersionDates
             ];
         });
     }

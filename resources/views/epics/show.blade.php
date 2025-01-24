@@ -17,7 +17,7 @@
             <!-- Right Column: Epic Details -->
             <div class="lg:w-[45%] lg:ml-8">
                 <div class="flex justify-between mb-2 items-center">
-                    <h2 class="text-lg font-bold text-gray-700 mr-4">Epic Details</h2>
+                    <h2 class="text-lg font-bold text-gray-700 mr-4">Item Details</h2>
                     <a href="https://cityinnovate.atlassian.net/browse/{{ $epic['key'] }}"
                         target="_blank"
                         class="bg-brand-600 rounded border text-white py-2 px-3 hover:underline text-sm font-semibold">
@@ -33,14 +33,16 @@
                             <a href="https://cityinnovate.atlassian.net/browse/{{ $epic['key'] }}" target="_blank" class="font-medium underline">{{ $epic['key'] }}</a>
                         </div>
                         <!-- PM Assigned -->
-                        @if (!empty($epic['fields']['customfield_10506']))
+                        @if (!empty($epic['fields']['customfield_10308']))
                             <div class="flex justify-between py-2 items-center">
                                 <span class="text-gray-600 font-medium">PM Assigned:</span>
                                 <div class="flex items-center">
-                                    <img src="{{ $epic['fields']['customfield_10308']['avatarUrls']['48x48'] ?? '' }}"
-                                         alt="{{ $epic['fields']['customfield_10308']['displayName'] ?? 'PM Avatar' }}"
-                                         class="w-8 h-8 rounded-full mr-2">
-                                    <span class="font-semibold">{{ $epic['fields']['customfield_10308']['displayName'] ?? 'Unknown' }}</span>
+                                    @if (!empty($epic['fields']['customfield_10308']['avatarUrls']['48x48']))
+                                        <img src="{{ $epic['fields']['customfield_10308']['avatarUrls']['48x48'] }}"
+                                            alt="{{ $epic['fields']['customfield_10308']['displayName'] ?? 'PM Avatar' }}"
+                                            class="w-8 h-8 rounded-full mr-2">
+                                    @endif
+                                    <span class="font-semibold">{{ $epic['fields']['customfield_10308']['displayName'] ?? '--' }}</span>
                                 </div>
                             </div>
                         @endif
@@ -74,7 +76,7 @@
                             <span class="font-semibold">
                                 @foreach ($epic['fields']['fixVersions'] ?? [] as $fixVersion)
                                     <a href="{{ route('releases.show', $fixVersion['id']) }}"
-                                    class="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm font-medium hover:underline">
+                                    class="inline-block px-2 py-1 bg-blue-50 text-blue-800 rounded text-sm font-medium hover:underline">
                                         {{ $fixVersion['name'] }}
                                     </a>
                                 @endforeach

@@ -26,12 +26,19 @@ class CustomerController extends Controller
     {
         $data = $this->jira->getCustomerDetails($customerId);
 
+        // Sort fix versions by release date
+        $groupedItems = $data['groupedItems'];
+        $fixVersionDates = $data['fixVersionDates'];
+
+        uksort($groupedItems, function ($a, $b) use ($fixVersionDates) {
+            return strtotime($fixVersionDates[$a] ?? '9999-12-31') <=> strtotime($fixVersionDates[$b] ?? '9999-12-31');
+        });
+
         return view('customers.show', [
             'customer' => $data['customer'],
             'counts' => $data['counts'],
-            'epics' => $data['epics'],
-            'bugs' => $data['bugs'],
-            'requests' => $data['requests'],
+            'groupedItems' => $groupedItems,
+            'unassignedItems' => $data['unassignedItems'],
         ]);
     }
 }
