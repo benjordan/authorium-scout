@@ -388,7 +388,7 @@ class JiraService
             // Fetch all issues (epics, bugs, requests)
             $response = $this->client->get("{$baseUrl}/rest/api/3/search", [
                 'query' => [
-                    'jql' => "{$customerJql} AND issuetype IN ('Epic', 'Bug', 'Request') ORDER BY created DESC",
+                    'jql' => "{$customerJql} AND issuetype IN ('Epic', 'Bug', 'Request') AND statusCategory != Done ORDER BY created DESC",
                     'fields' => 'summary,issuetype,fixVersions,priority',
                     'maxResults' => 1000,
                 ],
