@@ -68,13 +68,15 @@
                         @foreach($epics as $epic)
                             <tr>
                                 <td class="border px-4 py-2">
-                                    <a href="{{ route('epics.show', $epic['key']) }}"
-                                       class="text-brand-600 font-medium hover:underline">
+                                    <a href="https://cityinnovate.atlassian.net/browse/{{ $epic['key'] }}" target="_blank" class="text-brand-600 hover:underline">
                                         {{ $epic['key'] }}
                                     </a>
                                 </td>
                                 <td class="border px-4 py-2">
-                                    {{ $epic['fields']['summary'] ?? 'No Title' }}
+                                    <a href="{{ route('epics.show', $epic['key']) }}"
+                                       class="text-brand-600 font-medium hover:underline">
+                                        {{ $epic['fields']['summary'] ?? 'No Title' }}
+                                    </a>
                                 </td>
                                 <td class="border px-4 py-2">
                                     {{ $epic['fields']['customfield_10507']['value'] ?? '--' }}
