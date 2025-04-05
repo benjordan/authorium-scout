@@ -8,7 +8,7 @@
             <span class="inline-flex items-center px-3 py-1 text-sm font-medium bg-brand-100 text-brand-800 rounded">
                 {{ count($items) }} {{ ucfirst($type) }}
             </span>
-            <a href="{{ route('releases.workload', $releaseKey) }}"><i class="fa-regular fa-dumbbell"></i></a>
+            <a href="{{ route('releases.workload', $release['id']) }}"><i class="fa-regular fa-dumbbell"></i></a>
         </x-slot>
 
         <!-- Items Table -->
