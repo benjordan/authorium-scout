@@ -7,6 +7,7 @@
                     <h1 class="text-3xl font-bold text-gray-800">{{ $releaseName }}</h1>
                     <p class="mt-2 text-sm text-gray-500">
                         Release Key: <span class="font-semibold">{{ $releaseKey }}</span>
+                        <a href="{{ route('releases.workload', $releaseKey) }}"><i class="fa-regular fa-dumbbell"></i></a>
                     </p>
                 </div>
             </div>
@@ -30,8 +31,10 @@
                     @forelse($epics as $epic)
                         <tr class="odd:bg-gray-50 even:bg-white">
                             <!-- Epic Key -->
-                            <td class="border px-4 py-2 text-sm">
-                                {{ $epic['key'] }}
+                            <td class="border px-4 py-2 text-medium">
+                                <a href="https://cityinnovate.atlassian.net/browse/{{ $epic['key'] }}" target="_blank" class="text-brand-600 hover:underline">
+                                    {{ $epic['key'] }}
+                                </a>
                             </td>
                             <!-- Epic Name -->
                             <td class="border px-4 py-2">

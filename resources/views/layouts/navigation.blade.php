@@ -10,7 +10,6 @@
 
         <!-- Navigation Links -->
         <nav class="flex-1 hidden md:flex items-center justify-center space-x-8">
-            <a href="{{ route('dashboard') }}" class="text font-medium text-gray-700 hover:text-gray-900">Dashboard</a>
             <a href="{{ route('customers.index') }}" class="text font-medium text-gray-700 hover:text-gray-900">Customers</a>
             <a href="{{ route('features.index') }}" class="text font-medium text-gray-700 hover:text-gray-900">Components</a>
             <a href="{{ route('releases.index') }}" class="text font-medium text-gray-700 hover:text-gray-900">Releases</a>

@@ -17,7 +17,10 @@ class CustomerController extends Controller
     public function index()
     {
         // Fetch all customers
-        $customers = $this->jira->getAllCustomers();
+        $customers = $this->jira->getAllCustomersWithDetails();
+
+        // Sort customers by name alphabetically
+        $customers = collect($customers)->sortBy('name')->toArray();
 
         return view('customers.index', compact('customers'));
     }

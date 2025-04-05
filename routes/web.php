@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\EpicController;
@@ -8,14 +9,16 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\KanbanController;
 use App\Http\Controllers\ReleaseController;
+use Illuminate\Support\Facades\Artisan;
 
 Route::get('/', function () {
-    return view('auth/login');
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
+    return view('auth.login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [ReleaseController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -36,6 +39,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/releases', [ReleaseController::class, 'index'])->name('releases.index');
     Route::get('/releases/{id}', [ReleaseController::class, 'show'])->name('releases.show');
+    Route::get('/releases/{id}/workload', [ReleaseController::class, 'workload'])->name('releases.workload');
     Route::get('/releases/{releaseKey}/{type}/{status}', [ReleaseController::class, 'statusDetails'])->name('releases.statusDetails');
 });
 

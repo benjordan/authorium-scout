@@ -158,4 +158,48 @@ class ReleaseController extends Controller
             'items' => $filteredItems,
         ]);
     }
+
+    public function workload($releaseKey)
+    {
+        // Fetch release details from Jira
+        $release = $this->jira->getReleaseDetails($releaseKey);
+
+        // Fetch Critical and P0 epics for the release
+        $epics = $this->jira->getAllEpicsInRelease($releaseKey);
+
+        // Define the priority order
+        $priorityOrder = ['Critical', 'P0', 'P1', 'P2'];
+
+        $groupedEpics = [];
+        foreach ($epics as $epic) {
+            $manager = $epic['fields']['customfield_10308']['displayName'] ?? 'Unassigned';
+            $groupedEpics[$manager][] = $epic;
+        }
+        // Sort each group by priority using the priorityOrder array
+        foreach ($groupedEpics as $manager => &$epicGroup) {
+            usort($epicGroup, function ($a, $b) use ($priorityOrder) {
+                $aPriority = array_search($a['fields']['priority']['name'] ?? '', $priorityOrder);
+                $bPriority = array_search($b['fields']['priority']['name'] ?? '', $priorityOrder);
+
+                // If not found in the array, assign a default value to sort them to the end
+                $aPriority = ($aPriority !== false) ? $aPriority : count($priorityOrder);
+                $bPriority = ($bPriority !== false) ? $bPriority : count($priorityOrder);
+
+                // If priorities are equal, sort alphabetically by summary
+                if ($aPriority === $bPriority) {
+                    return strcmp($a['fields']['summary'] ?? '', $b['fields']['summary'] ?? '');
+                }
+                return $aPriority - $bPriority;
+            });
+        }
+        unset($epicGroup);
+
+        //dd($groupedEpics);
+
+        // Pass the data to the view
+        return view('releases.workload', [
+            'release'      => $release,
+            'groupedEpics' => $groupedEpics,
+        ]);
+    }
 }

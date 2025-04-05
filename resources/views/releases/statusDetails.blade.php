@@ -8,6 +8,7 @@
             <span class="inline-flex items-center px-3 py-1 text-sm font-medium bg-brand-100 text-brand-800 rounded">
                 {{ count($items) }} {{ ucfirst($type) }}
             </span>
+            <a href="{{ route('releases.workload', $releaseKey) }}"><i class="fa-regular fa-dumbbell"></i></a>
         </x-slot>
 
         <!-- Items Table -->
@@ -15,6 +16,7 @@
             <table id="itemsTable" class="stripe">
                 <thead>
                     <tr class="bg-gray-100 text-gray-600">
+                        <th class="border px-4 py-2">Key</th>
                         <th class="border px-4 py-2 text-xs">Summary</th>
                         <th class="border px-4 py-2 text-xs">Priority</th>
                         @if ($type === 'epics')
@@ -28,6 +30,11 @@
                 <tbody>
                     @foreach($items as $item)
                         <tr>
+                            <td class="border px-4 py-2">
+                                    <a href="https://cityinnovate.atlassian.net/browse/{{ $item['key'] }}" target="_blank" class="text-brand-600 hover:underline">
+                                        {{ $item['key'] }}
+                                    </a>
+                                </td>
                             <td class="border px-4 py-2">
                                 <a href="{{ $type === 'epics' ? route('epics.show', $item['key']) : 'https://cityinnovate.atlassian.net/browse/' . $item['key'] }}"
                                    class="text-brand-600 font-medium hover:underline">

@@ -75,7 +75,7 @@ class JiraService
     /**
      * Fetch Critical and P0 epics in a release.
      */
-    public function getEpicsInRelease($releaseKey, $priorities = ['Critical', 'P0'])
+    public function getEpicsInRelease($releaseKey, $priorities = ['Critical', 'P0', 'P1'])
     {
         $cacheKey = "jira_epic_in_release_{$releaseKey}";
 
@@ -108,7 +108,7 @@ class JiraService
                 $response = $this->client->get("/rest/api/3/search", [
                     'query' => [
                         'jql' => "fixVersion = '{$releaseKey}' AND issuetype = Epic ORDER BY summary ASC",
-                        'fields' => 'summary,priority,status,customfield_10473,labels,customfield_10506,customfield_10507',
+                        'fields' => 'summary,priority,status,customfield_10473,labels,customfield_10308,customfield_10506,customfield_10507',
                     ],
                 ]);
                 return json_decode($response->getBody(), true)['issues'];
@@ -359,6 +359,37 @@ class JiraService
                 return $customers;
             }
         );
+    }
+
+    public function getAllCustomersWithDetails()
+    {
+        $customers = $this->getAllCustomers();
+
+        foreach ($customers as $id => &$customer) {
+            // Convert the customer string into an array with an 'id' and 'name' key.
+            $customer = [
+                'id'   => $id,
+                'name' => $customer,
+            ];
+
+            $data = $this->getCustomerDetails($id);
+
+            // Add counts and fixVersions for the customer
+            $customer['counts'] = $data['counts'];
+            $customer['fixVersions'] = [];
+
+            foreach ($data['groupedItems'] as $fixVersion => $items) {
+                $customer['fixVersions'][$fixVersion] = count($items);
+            }
+
+            // Sort fixVersions by release date
+            uksort($customer['fixVersions'], function ($a, $b) use ($data) {
+                $fixVersionDates = $data['fixVersionDates'];
+                return strtotime($fixVersionDates[$a] ?? '9999-12-31') <=> strtotime($fixVersionDates[$b] ?? '9999-12-31');
+            });
+        }
+
+        return $customers;
     }
 
     public function getCustomerDetails($customerId)
