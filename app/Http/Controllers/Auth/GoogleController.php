@@ -20,9 +20,12 @@ class GoogleController extends Controller
     {
         $googleUser = Socialite::driver('google')->user();
 
-        // Restrict login to authorium.com domain
-        if (!str_ends_with($googleUser->email, '@authorium.com')) {
-            return redirect('/login')->with('error', 'Only @authorium.com emails are allowed.');
+        // Restrict login to authorium.com and eagerworks.com domains
+        if (
+            !str_ends_with($googleUser->email, '@authorium.com')
+            && !str_ends_with($googleUser->email, '@eagerworks.com')
+        ) {
+            return redirect('/login')->with('error', 'Only @authorium.com and @eagerworks.com emails are allowed.');
         }
 
         // Find or create user
