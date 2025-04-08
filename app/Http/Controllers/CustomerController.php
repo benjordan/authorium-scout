@@ -29,7 +29,6 @@ class CustomerController extends Controller
     {
         $data = $this->jira->getCustomerDetails($customerId);
 
-        // Sort fix versions by release date
         $groupedItems = $data['groupedItems'];
         $fixVersionDates = $data['fixVersionDates'];
 
@@ -42,6 +41,7 @@ class CustomerController extends Controller
             'counts' => $data['counts'],
             'groupedItems' => $groupedItems,
             'unassignedItems' => $data['unassignedItems'],
+            'shippedItems' => $data['shippedItems'],
         ]);
     }
 }

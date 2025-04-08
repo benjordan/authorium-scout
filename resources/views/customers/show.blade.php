@@ -101,5 +101,46 @@
                 <p class="text-gray-600">No ungrouped items found for this customer.</p>
             @endif
         </div>
+
+        <!-- Previously Shipped Work -->
+        @if (!empty($shippedItems))
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Shipped Work (Released Versions)</h2>
+
+            <div class="overflow-x-auto bg-white rounded shadow">
+                <table class="min-w-full divide-y divide-gray-200 text-sm">
+                    <thead class="bg-gray-100 text-left text-gray-700">
+                        <tr>
+                            <th class="px-4 py-2">Fix Version</th>
+                            <th class="px-4 py-2">Key</th>
+                            <th class="px-4 py-2">Summary</th>
+                            <th class="px-4 py-2">Type</th>
+                            <th class="px-4 py-2">Priority</th>
+                            <th class="px-4 py-2">Jira</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @foreach ($shippedItems as $version => $items)
+                            @foreach ($items as $item)
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-2 font-medium text-gray-800">{{ $version }}</td>
+                                    <td class="px-4 py-2">{{ $item['key'] ?? '—' }}</td>
+                                    <td class="px-4 py-2">{{ $item['fields']['summary'] ?? 'No summary' }}</td>
+                                    <td class="px-4 py-2">{{ $item['fields']['issuetype']['name'] ?? '—' }}</td>
+                                    <td class="px-4 py-2">{{ $item['fields']['priority']['name'] ?? '—' }}</td>
+                                    <td class="px-4 py-2">
+                                        <a href="https://cityinnovate.atlassian.net/browse/{{ $item['key'] }}" class="text-blue-600 underline text-xs" target="_blank">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        @endif
     </div>
 </x-app-layout>

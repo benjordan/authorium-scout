@@ -28,10 +28,10 @@ class FeatureController extends Controller
 
         return view('features.show', [
             'counts' => $data['counts'],
-            'feature' => $data['component'], // Pass component details
-            'epics' => $data['epics'],
-            'bugs' => $data['bugs'],
-            'requests' => $data['requests'],
+            'feature' => $data['component'],
+            'groupedItems' => $data['groupedItems'],
+            'unassignedItems' => $data['unassignedItems'],
+            'shippedItems' => $data['shippedItems'],
         ]);
     }
 }
