@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/customers/{id}', [CustomerController::class, 'show'])->name('customers.show');
 
     Route::get('/epics', [EpicController::class, 'index'])->name('epics.index');
-    Route::get('/epics/{key}', [EpicController::class, 'show'])->name('epics.show');
+    Route::get('/epics/{issue}', [EpicController::class, 'show'])->name('epics.show');
 
     Route::get('/components', [FeatureController::class, 'index'])->name('features.index');
     Route::get('/components/{id}', [FeatureController::class, 'show'])->name('features.show');
@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/releases', [ReleaseController::class, 'index'])->name('releases.index');
     Route::get('/releases/{id}', [ReleaseController::class, 'show'])->name('releases.show');
     Route::get('/releases/{id}/workload', [ReleaseController::class, 'workload'])->name('releases.workload');
-    Route::get('/releases/{releaseKey}/{type}/{status}', [ReleaseController::class, 'statusDetails'])->name('releases.statusDetails');
+    Route::get('/releases/{releaseKey}/{type}/{status?}', [ReleaseController::class, 'statusDetails'])->name('releases.statusDetails');
 });
 
 Route::get('/flush-cache', function () {

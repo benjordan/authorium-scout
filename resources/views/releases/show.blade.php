@@ -28,41 +28,39 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($epics as $epic)
+                    @forelse($release->issues->where('type', 'Epic')->sortBy('status') as $epic)
                         <tr class="odd:bg-gray-50 even:bg-white">
                             <!-- Epic Key -->
                             <td class="border px-4 py-2 text-medium">
-                                <a href="https://cityinnovate.atlassian.net/browse/{{ $epic['key'] }}" target="_blank" class="text-brand-600 hover:underline">
-                                    {{ $epic['key'] }}
+                                <a href="https://cityinnovate.atlassian.net/browse/{{ $epic->jira_key }}" target="_blank" class="text-brand-600 hover:underline">
+                                    {{ $epic->jira_key }}
                                 </a>
                             </td>
                             <!-- Epic Name -->
                             <td class="border px-4 py-2">
-                                <a href="{{ route('epics.show', $epic['key']) }}" class="text-brand-600 hover:underline">
-                                    {{ $epic['fields']['summary'] }}
+                                <a href="{{ route('epics.show', $epic->jira_key) }}" class="text-brand-600 hover:underline">
+                                    {{ $epic->summary }}
                                 </a>
                             </td>
                             <!-- Size -->
                             <td class="border px-4 py-2 text-sm">
-                                {{ $epic['fields']['customfield_10507']['value'] ?? '--' }}
+                                {{ $epic->size ?? '--' }}
                             </td>
                             <!-- Status -->
                             <td class="border px-4 py-2">
                                 <span class="inline-block px-2 py-1 rounded text-sm font-medium
-                                    {{ $epic['fields']['status']['statusCategory']['name'] === 'Done' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                    {{ $epic['fields']['status']['name'] ?? 'Unknown' }}
+                                    {{ $epic->status === 'Done' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                    {{ $epic->status ?? 'Unknown' }}
                                 </span>
                             </td>
                             <!-- Priority -->
-                            <td class="border px-4 py-2">{{ $epic['fields']['priority']['name'] ?? '--' }}</td>
+                            <td class="border px-4 py-2">{{ $epic->priority ?? '--' }}</td>
                             <!-- Customer Commitment -->
-                            <td class="border px-4 py-2">
-                                {{ $epic['fields']['customfield_10473']['value'] ?? 'None' }}
-                            </td>
+                            <td class="border px-4 py-2">{{ $epic->release_commit_status ?? 'None' }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="border px-4 py-2 text-center text-gray-500 italic">
+                            <td colspan="6" class="border px-4 py-2 text-center text-gray-500 italic">
                                 No epics found for this release.
                             </td>
                         </tr>

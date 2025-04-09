@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\JiraService;
+use App\Models\FixVersion;
+use App\Models\Issue;
 
 class EpicController extends Controller
 {
@@ -35,11 +37,8 @@ class EpicController extends Controller
         return view('epics.index', compact('epics'));
     }
 
-    public function show($epicKey)
+    public function show(Issue $issue)
     {
-        // Get epic details
-        $epic = $this->jira->getEpicByKey($epicKey);
-        $childIssues = $this->jira->getChildIssues($epicKey);
-        return view('epics.show', compact('epic', 'childIssues'));
+        return view('epics.show', ['epic' => $issue]);
     }
 }

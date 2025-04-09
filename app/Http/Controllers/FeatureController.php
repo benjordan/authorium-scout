@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\JiraService;
+use App\Models\Component;
 
 use Illuminate\Http\Request;
 
@@ -17,8 +18,7 @@ class FeatureController extends Controller
 
     public function index()
     {
-        $features = $this->jira->getProjectFeatures();
-
+        $features = Component::all(); // or add pagination if you enjoy performance
         return view('features.index', compact('features'));
     }
 
