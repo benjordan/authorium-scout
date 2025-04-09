@@ -7,9 +7,21 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
+        // Product Managers Table
+        Schema::create('product_managers', function (Blueprint $table) {
+            $table->id();
+            $table->string('account_id')->unique();
+            $table->string('name');
+            $table->string('email')->nullable();
+            $table->string('avatar_url')->nullable();
+            $table->timestamps();
+        });
+
         // Issues Table
         Schema::create('issues', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('product_manager_id')->nullable();
+            $table->foreign('product_manager_id')->references('id')->on('product_managers')->onDelete('set null');
             $table->string('jira_key')->unique();
             $table->string('summary');
             $table->longText('description')->nullable();
@@ -48,15 +60,6 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        // Product Managers Table
-        Schema::create('product_managers', function (Blueprint $table) {
-            $table->id();
-            $table->string('account_id')->unique();
-            $table->string('name');
-            $table->string('email')->nullable();
-            $table->timestamps();
-        });
-
         // Pivot: Component <-> Issue
         Schema::create('component_issue', function (Blueprint $table) {
             $table->id();
@@ -72,25 +75,16 @@ return new class extends Migration {
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
-
-        // Pivot: Product Manager <-> Issue
-        Schema::create('issue_product_manager', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('issue_id')->constrained()->onDelete('cascade');
-            $table->foreignId('product_manager_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
-        });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('issue_product_manager');
         Schema::dropIfExists('customer_issue');
         Schema::dropIfExists('component_issue');
-        Schema::dropIfExists('product_managers');
         Schema::dropIfExists('customers');
         Schema::dropIfExists('components');
         Schema::dropIfExists('fix_versions');
         Schema::dropIfExists('issues');
+        Schema::dropIfExists('product_managers');
     }
 };

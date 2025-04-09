@@ -148,16 +148,21 @@ class JiraSyncCommand extends Command
             $localIssue->customers()->sync($customerIds);
 
             // Link product manager
-            $pmField = $fields['customfield_10308'] ?? null;
-            if ($pmField && isset($pmField['accountId'])) {
+            $pmData = $fields['customfield_10308'] ?? null;
+
+            if ($pmData && !empty($pmData['accountId'])) {
+                $avatarUrl = $pmData['avatarUrls']['48x48'] ?? null;
+
                 $pm = ProductManager::updateOrCreate(
-                    ['account_id' => $pmField['accountId']],
+                    ['account_id' => $pmData['accountId']],
                     [
-                        'name' => $pmField['displayName'] ?? 'Unknown',
-                        'email' => $pmField['emailAddress'] ?? null,
+                        'name' => $pmData['displayName'] ?? 'Unassigned',
+                        'avatar_url' => $avatarUrl,
                     ]
                 );
-                $localIssue->productManagers()->sync([$pm->id]);
+
+                $localIssue->product_manager_id = $pm->id;
+                $localIssue->save();
             }
         }
 

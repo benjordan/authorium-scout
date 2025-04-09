@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Services\JiraService;
 use App\Models\FixVersion;
+
 
 class ReleaseController extends Controller
 {
@@ -110,47 +112,34 @@ class ReleaseController extends Controller
         ]);
     }
 
-    public function workload($releaseKey)
+    public function workload($releaseId)
     {
-        // Fetch release details from Jira
-        $release = $this->jira->getReleaseDetails($releaseKey);
+        $release = FixVersion::with(['issues.productManagers'])->findOrFail($releaseId);
 
-        // Fetch Critical and P0 epics for the release
-        $epics = $this->jira->getAllEpicsInRelease($releaseKey);
+        $epics = $release->issues()
+            ->where('type', 'Epic')
+            ->with('productManagers')
+            ->get();
 
-        // Define the priority order
-        $priorityOrder = ['Critical', 'P0', 'P1', 'P2'];
+        // Flatten each epic into one per PM (or 'Unassigned' if none)
+        $groupedEpics = collect();
 
-        $groupedEpics = [];
         foreach ($epics as $epic) {
-            $manager = $epic['fields']['customfield_10308']['displayName'] ?? 'Unassigned';
-            $groupedEpics[$manager][] = $epic;
-        }
-        // Sort each group by priority using the priorityOrder array
-        foreach ($groupedEpics as $manager => &$epicGroup) {
-            usort($epicGroup, function ($a, $b) use ($priorityOrder) {
-                $aPriority = array_search($a['fields']['priority']['name'] ?? '', $priorityOrder);
-                $bPriority = array_search($b['fields']['priority']['name'] ?? '', $priorityOrder);
+            $managers = $epic->productManagers;
+            dd($managers);
 
-                // If not found in the array, assign a default value to sort them to the end
-                $aPriority = ($aPriority !== false) ? $aPriority : count($priorityOrder);
-                $bPriority = ($bPriority !== false) ? $bPriority : count($priorityOrder);
-
-                // If priorities are equal, sort alphabetically by summary
-                if ($aPriority === $bPriority) {
-                    return strcmp($a['fields']['summary'] ?? '', $b['fields']['summary'] ?? '');
+            if ($managers->isEmpty()) {
+                $groupedEpics['unassigned']['name'] = 'Unassigned';
+                $groupedEpics['unassigned']['epics'][] = $epic;
+            } else {
+                foreach ($managers as $pm) {
+                    $key = Str::slug($pm->name);
+                    $groupedEpics[$key]['name'] = $pm->name;
+                    $groupedEpics[$key]['epics'][] = $epic;
                 }
-                return $aPriority - $bPriority;
-            });
+            }
         }
-        unset($epicGroup);
 
-        //dd($groupedEpics);
-
-        // Pass the data to the view
-        return view('releases.workload', [
-            'release'      => $release,
-            'groupedEpics' => $groupedEpics,
-        ]);
+        return view('releases.workload', compact('release', 'groupedEpics'));
     }
 }

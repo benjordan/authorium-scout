@@ -19,6 +19,7 @@ class Issue extends Model
         'fix_version',
         'size',
         'release_commit_status',
+        'product_manager_id',
     ];
 
     public function getRouteKeyName()
@@ -41,8 +42,8 @@ class Issue extends Model
         return $this->belongsToMany(FixVersion::class);
     }
 
-    public function productManagers()
+    public function productManager()
     {
-        return $this->belongsToMany(ProductManager::class);
+        return $this->belongsTo(ProductManager::class);
     }
 }

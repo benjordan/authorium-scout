@@ -13,10 +13,11 @@ class ProductManager extends Model
         'account_id',
         'name',
         'email',
+        'avatar_url',
     ];
 
     public function issues()
     {
-        return $this->belongsToMany(Issue::class);
+        return $this->hasMany(Issue::class);
     }
 }

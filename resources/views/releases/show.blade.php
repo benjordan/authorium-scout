@@ -7,7 +7,7 @@
                     <h1 class="text-3xl font-bold text-gray-800">{{ $releaseName }}</h1>
                     <p class="mt-2 text-sm text-gray-500">
                         Release Key: <span class="font-semibold">{{ $releaseKey }}</span>
-                        <a href="{{ route('releases.workload', $releaseKey) }}"><i class="fa-regular fa-dumbbell"></i></a>
+                        <a href="{{ route('releases.workload', $release->id) }}"><i class="fa-regular fa-dumbbell"></i></a>
                     </p>
                 </div>
             </div>
