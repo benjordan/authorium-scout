@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Services\JiraService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
@@ -16,32 +18,54 @@ class CustomerController extends Controller
 
     public function index()
     {
-        // Fetch all customers
-        $customers = $this->jira->getAllCustomersWithDetails();
-
-        // Sort customers by name alphabetically
-        $customers = collect($customers)->sortBy('name')->toArray();
-
+        $customers = customer::all(); // or add pagination if you enjoy performance
         return view('customers.index', compact('customers'));
     }
 
-    public function show($customerId)
+    public function show($id)
     {
-        $data = $this->jira->getCustomerDetails($customerId);
+        $customer = Customer::with(['issues.fixVersions'])->findOrFail($id);
 
-        $groupedItems = $data['groupedItems'];
-        $fixVersionDates = $data['fixVersionDates'];
+        // Prepare a sorted list of unreleased fix versions for grouping
+        $issues = $customer->issues;
 
-        uksort($groupedItems, function ($a, $b) use ($fixVersionDates) {
-            return strtotime($fixVersionDates[$a] ?? '9999-12-31') <=> strtotime($fixVersionDates[$b] ?? '9999-12-31');
+        // Group issues by unreleased fix version name
+        $groupedIssues = collect();
+
+        foreach ($issues as $issue) {
+            $unreleasedFixes = $issue->fixVersions->filter(function ($fix) {
+                return !$fix->released && $fix->release_date;
+            });
+
+            if ($unreleasedFixes->isEmpty()) {
+                $groupedIssues->put('Unassigned', $groupedIssues->get('Unassigned', collect())->push($issue));
+            } else {
+                foreach ($unreleasedFixes as $fix) {
+                    $groupedIssues->put($fix->name, $groupedIssues->get($fix->name, collect())->push($issue));
+                }
+            }
+        }
+
+        // Sort by fix version release date (with Unassigned at the end)
+        $sortedGrouped = $groupedIssues->sortBy(function ($issues, $key) {
+            if ($key === 'Unassigned') {
+                return now()->addCentury();
+            }
+            $fix = $issues->first()->fixVersions->firstWhere('name', $key);
+            return $fix->release_date ?? now()->addCentury();
         });
 
+        // Count by issue type
+        $counts = $customer->issues()
+            ->selectRaw('type, COUNT(*) as count')
+            ->groupBy('type')
+            ->pluck('count', 'type')
+            ->toArray();
+
         return view('customers.show', [
-            'customer' => $data['customer'],
-            'counts' => $data['counts'],
-            'groupedItems' => $groupedItems,
-            'unassignedItems' => $data['unassignedItems'],
-            'shippedItems' => $data['shippedItems'],
+            'customer' => $customer,
+            'groupedIssues' => $sortedGrouped,
+            'counts' => $counts,
         ]);
     }
 }

@@ -76,7 +76,7 @@ class JiraService
         do {
             $response = $this->client->get("/rest/api/3/search", [
                 'query' => [
-                    'jql' => "project = '{$projectKey}' ORDER BY created DESC",
+                    'jql' => "project = '{$projectKey}' AND statusCategory != Done ORDER BY created DESC",
                     'fields' => 'summary,status,description,issuetype,priority,fixVersions,components,customfield_10506,customfield_10507,customfield_10638,customfield_10308',
                     'expand' => 'renderedFields',
                     'startAt' => $startAt,

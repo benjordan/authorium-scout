@@ -18,21 +18,19 @@ class EpicController extends Controller
 
     public function index()
     {
-        // Fetch all epics
-        $epics = $this->jira->getOpenEpics();
+        $priorityOrder = ['Critical', 'P0', 'P1', 'P2'];
 
-        // Sort epics by priority first, then by summary
-        usort($epics, function ($a, $b) {
-            $priorityOrder = ['Critical', 'P0', 'P1', 'P2'];
-            $aPriority = array_search($a['fields']['priority']['name'], $priorityOrder);
-            $bPriority = array_search($b['fields']['priority']['name'], $priorityOrder);
+        $epics = Issue::where('type', 'Epic')->get()
+            ->sort(function ($a, $b) use ($priorityOrder) {
+                $aPriority = array_search($a->priority, $priorityOrder) ?? 99;
+                $bPriority = array_search($b->priority, $priorityOrder) ?? 99;
 
-            if ($aPriority === $bPriority) {
-                return strcmp($a['fields']['summary'], $b['fields']['summary']);
-            }
+                if ($aPriority === $bPriority) {
+                    return strcmp($a->summary, $b->summary);
+                }
 
-            return $aPriority - $bPriority;
-        });
+                return $aPriority - $bPriority;
+            });
 
         return view('epics.index', compact('epics'));
     }

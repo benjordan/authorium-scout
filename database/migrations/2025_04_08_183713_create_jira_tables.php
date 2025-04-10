@@ -43,8 +43,8 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        // Components Table
-        Schema::create('components', function (Blueprint $table) {
+        // Features Table
+        Schema::create('features', function (Blueprint $table) {
             $table->id();
             $table->string('jira_id')->unique();
             $table->string('name');
@@ -60,11 +60,11 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        // Pivot: Component <-> Issue
-        Schema::create('component_issue', function (Blueprint $table) {
+        // Pivot: Feature <-> Issue
+        Schema::create('feature_issue', function (Blueprint $table) {
             $table->id();
             $table->foreignId('issue_id')->constrained()->onDelete('cascade');
-            $table->foreignId('component_id')->constrained()->onDelete('cascade');
+            $table->foreignId('feature_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -80,9 +80,9 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::dropIfExists('customer_issue');
-        Schema::dropIfExists('component_issue');
+        Schema::dropIfExists('feature_issue');
         Schema::dropIfExists('customers');
-        Schema::dropIfExists('components');
+        Schema::dropIfExists('features');
         Schema::dropIfExists('fix_versions');
         Schema::dropIfExists('issues');
         Schema::dropIfExists('product_managers');

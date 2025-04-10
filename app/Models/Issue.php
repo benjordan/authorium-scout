@@ -29,7 +29,7 @@ class Issue extends Model
 
     public function components()
     {
-        return $this->belongsToMany(Component::class);
+        return $this->belongsToMany(Feature::class);
     }
 
     public function customers()

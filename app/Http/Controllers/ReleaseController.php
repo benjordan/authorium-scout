@@ -114,31 +114,35 @@ class ReleaseController extends Controller
 
     public function workload($releaseId)
     {
-        $release = FixVersion::with(['issues.productManagers'])->findOrFail($releaseId);
+        $release = FixVersion::with(['issues.productManager'])->findOrFail($releaseId);
 
         $epics = $release->issues()
             ->where('type', 'Epic')
-            ->with('productManagers')
+            ->with('productManager')
             ->get();
 
-        // Flatten each epic into one per PM (or 'Unassigned' if none)
-        $groupedEpics = collect();
+        $groupedEpics = [];
 
         foreach ($epics as $epic) {
-            $managers = $epic->productManagers;
-            dd($managers);
+            $pm = $epic->productManager;
+            $key = $pm ? Str::slug($pm->name) : 'unassigned';
+            $name = $pm->name ?? 'Unassigned';
+            $avatar = $pm->avatar_url ?? null;
 
-            if ($managers->isEmpty()) {
-                $groupedEpics['unassigned']['name'] = 'Unassigned';
-                $groupedEpics['unassigned']['epics'][] = $epic;
-            } else {
-                foreach ($managers as $pm) {
-                    $key = Str::slug($pm->name);
-                    $groupedEpics[$key]['name'] = $pm->name;
-                    $groupedEpics[$key]['epics'][] = $epic;
-                }
+            if (!isset($groupedEpics[$key])) {
+                $groupedEpics[$key] = [
+                    'name' => $name,
+                    'avatar' => $avatar,
+                    'epics' => [],
+                ];
             }
+
+            $groupedEpics[$key]['epics'][] = $epic;
         }
+
+        $groupedEpics = collect($groupedEpics)
+            ->sortByDesc(fn($group) => count($group['epics']))
+            ->all(); // if you want it back as a plain array
 
         return view('releases.workload', compact('release', 'groupedEpics'));
     }

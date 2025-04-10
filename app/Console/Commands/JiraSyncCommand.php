@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use App\Services\JiraService;
 use App\Models\Issue;
 use App\Models\FixVersion;
-use App\Models\Component;
+use App\Models\Feature;
 use App\Models\Customer;
 use App\Models\ProductManager;
 use Illuminate\Support\Facades\Log;
@@ -44,7 +44,7 @@ class JiraSyncCommand extends Command
         // 2. Sync components
         $components = $this->jira->getProjectFeatures();
         foreach ($components as $component) {
-            Component::updateOrCreate(
+            Feature::updateOrCreate(
                 ['jira_id' => $component['id']],
                 [
                     'name' => $component['name'],
@@ -118,7 +118,7 @@ class JiraSyncCommand extends Command
                     continue;
                 }
 
-                $localComponent = Component::updateOrCreate(
+                $localComponent = Feature::updateOrCreate(
                     ['jira_id' => $component['id']],
                     ['name' => $component['name'] ?? 'Unnamed']
                 );
