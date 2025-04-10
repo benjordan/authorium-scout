@@ -18,6 +18,11 @@
         <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
         <script src="https://kit.fontawesome.com/7669ab7fa3.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <!-- Tom Select -->
+        <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
@@ -47,6 +52,7 @@
 
     </body>
     @livewireScripts
+    @stack('scripts')
     <script>
         // Dropdown Toggle
         document.getElementById('user-menu-button').addEventListener('click', () => {

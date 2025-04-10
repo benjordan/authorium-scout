@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Issue;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 
@@ -114,6 +115,22 @@ class JiraService
                 return array_filter($versions, fn($version) => !$version['released']);
             }
         );
+    }
+
+    public function updateIssueCustomers(Issue $issue)
+    {
+        $customerNames = $issue->customers->pluck('name')->all();
+
+        // This part depends on what Jira expects
+        $jiraPayload = [
+            'fields' => [
+                'customfield_10506' => array_map(fn($name) => ['value' => $name], $customerNames),
+            ],
+        ];
+
+        $this->client->put("/rest/api/3/issue/{$issue->jira_key}", [
+            'json' => $jiraPayload,
+        ]);
     }
 
     public function getReleaseById($releaseId)
