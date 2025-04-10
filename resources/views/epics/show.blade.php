@@ -135,7 +135,7 @@
                         <span class="text-gray-600 font-medium">Customers:</span>
                         <span class="font-semibold flex gap-1 flex-wrap">
                             @forelse ($epic->customers as $customer)
-                                <a href="{{ route('customers.show', $customer->id) }}"
+                                <a href="{{ route('customers.show', $customer->jira_id) }}"
                                     class="inline-block px-2 py-1 bg-brand-100 text-brand-800 rounded text-sm font-medium hover:underline">
                                     {{ $customer->name }}
                                 </a>
