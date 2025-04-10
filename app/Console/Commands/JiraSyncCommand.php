@@ -10,6 +10,7 @@ use App\Models\Feature;
 use App\Models\Customer;
 use App\Models\ProductManager;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class JiraSyncCommand extends Command
@@ -167,6 +168,7 @@ class JiraSyncCommand extends Command
             }
         }
 
+        Cache::put('jira_last_sync', now());
         Log::channel('jira_sync')->info('Jira sync complete. The local DB now holds the power.');
     }
 
