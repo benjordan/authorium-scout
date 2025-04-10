@@ -11,7 +11,7 @@
 
         <!-- Epics Table Card -->
         <div class="bg-white p-6 rounded shadow">
-            <h2 class="text-2xl font-bold mb-4">Epics in Release</h2>
+            <h2 class="text-xl font-medium border-b text-gray-900 pb-3 mb-6">Epics in Release</h2>
             <x-issue-table :items="$release->issues->where('type', 'Epic')->sortBy('status')" tableId="epicsTable" />
         </div>
 

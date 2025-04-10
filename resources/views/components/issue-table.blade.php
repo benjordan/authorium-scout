@@ -1,6 +1,7 @@
 @props(['items', 'tableId' => 'issuesTable'])
 
 <table id="{{ $tableId }}" class="table-auto w-full border border-gray-200">
+
     <thead>
         <tr class="bg-gray-100 text-gray-600 text-sm">
             <th class="border px-4 py-2 text-left whitespace-nowrap">Key</th>
@@ -12,6 +13,7 @@
             <th class="border px-4 py-2 text-left">Customer Commitment</th>
         </tr>
     </thead>
+
     <tbody>
         @forelse($items as $item)
             <tr class="odd:bg-gray-50 even:bg-white">
