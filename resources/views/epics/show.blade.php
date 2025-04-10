@@ -25,7 +25,7 @@
         @endif
         <div class="bg-white p-6 rounded shadow flex flex-col lg:flex-row justify-between">
             <!-- Left Column: Epic Summary -->
-            <div class="flex-1 lg:w-[55%] mb-4 lg:mb-0">
+            <div class="flex-1 lg:w-[65%] mb-4 lg:mb-0">
                 <a href="https://cityinnovate.atlassian.net/browse/{{ $epic->jira_key }}" target="_blank" class="inline-block bg-gray-100 px-2 py-1 text-sm mb-2 font-medium rounded">
                     {{ $epic->jira_key }}
                 </a>
@@ -53,7 +53,7 @@
             </div>
 
             <!-- Right Column: Epic Details -->
-            <div class="lg:w-[45%] lg:ml-8">
+            <div class="lg:w-[35%] lg:ml-8">
                 <div class="flex justify-between mb-2 items-center">
                     <h2 class="text-lg font-bold text-gray-700 mr-4">Item Details</h2>
                     <a href="https://cityinnovate.atlassian.net/browse/{{ $epic->jira_key }}"
@@ -67,25 +67,25 @@
 
                     <!-- Status -->
                     <div class="flex justify-between py-2">
-                        <span class="text-gray-600 font-medium">Status:</span>
+                        <span class="text-gray-600 font-medium text-sm">Status:</span>
                         <span class="font-semibold">{{ $epic->status ?? 'Unknown' }}</span>
                     </div>
 
                     <!-- Size -->
                     <div class="flex justify-between py-2">
-                        <span class="text-gray-600 font-medium">Size:</span>
+                        <span class="text-gray-600 font-medium text-sm">Size:</span>
                         <span class="font-semibold">{{ $epic->size ?? 'Unknown' }}</span>
                     </div>
 
                     <!-- Size -->
                     <div class="flex justify-between py-2">
-                        <span class="text-gray-600 font-medium">Release Commit Status:</span>
+                        <span class="text-gray-600 font-medium text-sm">Release Commit Status:</span>
                         <span class="font-semibold">{{ $epic->release_commit_status ?? 'Unknown' }}</span>
                     </div>
 
                     <!-- Priority -->
                     <div class="flex justify-between py-2">
-                        <span class="text-gray-600 font-medium">Priority:</span>
+                        <span class="text-gray-600 font-medium text-sm">Priority:</span>
                         @php
                             $priority = $epic->priority ?? 'Unknown';
                             $priorityColor = match ($priority) {
@@ -103,7 +103,7 @@
 
                     <!-- Fix Versions -->
                     <div class="flex justify-between py-2">
-                        <span class="text-gray-600 font-medium">Fix Versions:</span>
+                        <span class="text-gray-600 font-medium text-sm">Fix Versions:</span>
                         <span class="font-semibold space-x-1">
                             @foreach ($epic->fixVersions as $fix)
                                 <a href="{{ route('releases.show', $fix->id) }}"
@@ -116,7 +116,7 @@
 
                     <!-- Customer Commitment -->
                     <div class="flex justify-between py-2">
-                        <span class="text-gray-600 font-medium">Customer Commitment:</span>
+                        <span class="text-gray-600 font-medium text-sm">Customer Commitment:</span>
                         @php
                             $commitment = $epic->customer_commitment ?? 'None';
                             $commitmentColor = match ($commitment) {
@@ -132,7 +132,7 @@
 
                     <!-- Customers -->
                     <div class="flex justify-between py-2">
-                        <span class="text-gray-600 font-medium">Customers:</span>
+                        <span class="text-gray-600 font-medium text-sm">Customers:</span>
                         <span class="font-semibold flex gap-1 flex-wrap">
                             @forelse ($epic->customers as $customer)
                                 <a href="{{ route('customers.show', $customer->jira_id) }}"
@@ -147,7 +147,7 @@
 
                     <!-- Components -->
                     <div class="flex justify-between py-2">
-                        <span class="text-gray-600 font-medium">Components:</span>
+                        <span class="text-gray-600 font-medium text-sm">Components:</span>
                         <span class="font-semibold flex gap-1 flex-wrap">
                             @forelse ($epic->components as $component)
                                 <span class="inline-block px-2 py-1 bg-blue-50 text-blue-800 rounded text-sm font-medium">

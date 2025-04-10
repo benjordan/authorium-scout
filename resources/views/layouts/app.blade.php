@@ -38,8 +38,8 @@
                 {{ $slot }}
             </main>
 
-            <footer class="w-full text-center text-xs text-gray-500 py-6 border-t mt-12">
-                {{ $appVersion }} &nbsp; | &nbsp;
+            <footer class="w-full text-center text-xs bg-gray-700 text-gray-100 py-6 border-t mt-12">
+                {{ $appVersion }} &nbsp; &bull; &nbsp;
                 Jira data last synced {{ $jiraLastSynced }}.
             </footer>
         </div>
