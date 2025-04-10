@@ -1,8 +1,47 @@
 <x-app-layout>
-    <div class="container mx-auto py-6 space-y-8">
+
+    <div class="container mx-auto py-6 space-y-2">
+        @php
+            $status = strtolower($epic->release_commit_status ?? 'unknown');
+            $statusMap = [
+                'locked' => ['bg-blue-100 bg-opacity-60 text-blue-800', 'Locked', 'This epic has been locked in to deliver for the release it is associated with.'],
+                'tentative' => ['bg-orange-100 bg-opacity-60 text-orange-800', 'Tentative', 'This epic is tentatively planned for this release but could very likely be moved out to fulfill other committments.'],
+                'confirmed' => ['bg-brand-100 bg-opacity-60 text-brand-800', 'Confirmed', 'This epic has been confirmed by leadership as part of its associated release.'],
+                'committed' => ['bg-brand-100 bg-opacity-60 text-brand-800', 'Committed', 'This epic is committed to be delivered in the release it is associated with.'],
+            ];
+        @endphp
+
+        @if (array_key_exists($status, $statusMap))
+            @php
+                $statusClass = $statusMap[$status][0];
+                $statusTitle = $statusMap[$status][1];
+                $statusDescription = $statusMap[$status][2];
+            @endphp
+
+            <div class="rounded border px-4 py-3 {{ $statusClass }}">
+                <div class="font-bold">{{ $statusTitle }} Epic</div>
+                <p class="text-sm">{{ $statusDescription }}</p>
+            </div>
+        @endif
         <div class="bg-white p-6 rounded shadow flex flex-col lg:flex-row justify-between">
             <!-- Left Column: Epic Summary -->
             <div class="flex-1 lg:w-[55%] mb-4 lg:mb-0">
+                <a href="https://cityinnovate.atlassian.net/browse/{{ $epic->jira_key }}" target="_blank" class="inline-block bg-gray-100 px-2 py-1 text-sm mb-2 font-medium rounded">
+                    {{ $epic->jira_key }}
+                </a>
+                @php
+                    $type = strtolower($epic->type);
+                    $typeStyles = [
+                        'epic' => 'bg-purple-100 text-purple-800',
+                        'request' => 'bg-orange-100 text-orange-800',
+                        'bug' => 'bg-red-100 text-red-800',
+                        'story' => 'bg-blue-100 text-blue-800',
+                    ];
+                    $badgeClass = $typeStyles[$type] ?? 'bg-gray-100 text-gray-800';
+                @endphp
+                <span class="inline-block px-2 py-1 text-sm mb-2 font-medium rounded {{ $badgeClass }}">
+                    {{ ucfirst($epic->type) }}
+                </span>
                 <h1 class="text-3xl font-bold text-gray-800">{{ $epic->summary }}</h1>
                 @if (!empty($epic->description))
                     <div class="mt-4 text-content max-w-none">
@@ -25,13 +64,6 @@
                 </div>
 
                 <div class="bg-gray-50 p-4 rounded border divide-y divide-gray-200">
-                    <!-- Key -->
-                    <div class="flex justify-between py-2">
-                        <span class="text-gray-600 font-medium">Key:</span>
-                        <a href="https://cityinnovate.atlassian.net/browse/{{ $epic->jira_key }}" target="_blank" class="font-medium underline">
-                            {{ $epic->jira_key }}
-                        </a>
-                    </div>
 
                     <!-- Status -->
                     <div class="flex justify-between py-2">
