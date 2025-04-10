@@ -43,6 +43,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/releases/{releaseKey}/{type}/{status?}', [ReleaseController::class, 'statusDetails'])->name('releases.statusDetails');
 });
 
+Route::get('/jira-sync', function () {
+    Artisan::call('jira:sync-all');
+    return 'Jira sync run at ' . now();
+})->middleware('auth');
+
 Route::get('/flush-cache', function () {
 
     // Clear various caches
