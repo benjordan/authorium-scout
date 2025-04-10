@@ -25,6 +25,75 @@ class JiraService
         return Cache::remember($cacheKey, now()->addSeconds($ttl), $apiCall);
     }
 
+    public function getAllFixVersions()
+    {
+        $cacheKey = "jira_all_fix_versions";
+        $projectKey = config('services.jira.project_key');
+
+        if (empty($projectKey)) {
+            throw new \Exception('JIRA_PROJECT_KEY is not configured.');
+        }
+
+        return $this->cachedApiCall(
+            $cacheKey,
+            function () use ($projectKey) {
+                $response = $this->client->get("/rest/api/3/project/{$projectKey}/versions");
+                return json_decode($response->getBody(), true);
+            }
+        );
+    }
+
+    public function getProjectFeatures()
+    {
+        $cacheKey = 'jira_project_features';
+
+        return $this->cachedApiCall(
+            $cacheKey,
+            function () {
+                $baseUrl = config('services.jira.base_url');
+                $projectKey = config('services.jira.project_key');
+
+                if (empty($baseUrl) || empty($projectKey)) {
+                    throw new \Exception('JIRA configuration is not properly set in services.php.');
+                }
+
+                $url = "{$baseUrl}/rest/api/3/project/{$projectKey}/components";
+                $response = $this->client->get($url);
+
+                return json_decode($response->getBody(), true);
+            }
+        );
+    }
+
+    public function getAllProjectIssues()
+    {
+        $projectKey = config('services.jira.project_key');
+
+        $startAt = 0;
+        $maxResults = 100;
+        $allIssues = [];
+
+        do {
+            $response = $this->client->get("/rest/api/3/search", [
+                'query' => [
+                    'jql' => "project = '{$projectKey}' AND statusCategory != Done ORDER BY created DESC",
+                    'fields' => 'summary,status,description,issuetype,priority,fixVersions,components,customfield_10506,customfield_10507,customfield_10638,customfield_10308',
+                    'expand' => 'renderedFields',
+                    'startAt' => $startAt,
+                    'maxResults' => $maxResults,
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+            $issues = $data['issues'] ?? [];
+
+            $allIssues = array_merge($allIssues, $issues);
+            $startAt += $maxResults;
+        } while (count($issues) === $maxResults);
+
+        return $allIssues;
+    }
+
     /**
      * Fetch unreleased versions (releases) for the project.
      */
@@ -226,28 +295,6 @@ class JiraService
             ]);
             return json_decode($response->getBody(), true)['issues'];
         });
-    }
-
-    public function getProjectFeatures()
-    {
-        $cacheKey = 'jira_project_features';
-
-        return $this->cachedApiCall(
-            $cacheKey,
-            function () {
-                $baseUrl = config('services.jira.base_url');
-                $projectKey = config('services.jira.project_key');
-
-                if (empty($baseUrl) || empty($projectKey)) {
-                    throw new \Exception('JIRA configuration is not properly set in services.php.');
-                }
-
-                $url = "{$baseUrl}/rest/api/3/project/{$projectKey}/components";
-                $response = $this->client->get($url);
-
-                return json_decode($response->getBody(), true);
-            }
-        );
     }
 
     public function getEpicsByFeature($featureId)

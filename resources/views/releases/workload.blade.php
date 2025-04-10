@@ -1,5 +1,4 @@
 <!-- resources/views/releases/workload.blade.php -->
-
 <x-app-layout>
     <div class="container mx-auto py-6">
         <x-slot name="header">
@@ -8,9 +7,18 @@
             </h1>
         </x-slot>
 
-        @foreach($groupedEpics as $manager => $epics)
+        @foreach($groupedEpics as $manager => $data)
+
+            @php
+                $epics = $data['epics'];
+            @endphp
             <div class="my-6 py-6 px-8 rounded bg-white">
-                <h2 class="text-lg font-bold mb-2">{{ $manager }}</h2>
+                <h2 class="text-lg font-semibold text-gray-800 flex items-center space-x-2 mb-4">
+                    <span>{{ $data['name'] }}</span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-brand-100 text-brand-800">
+                        {{ count($epics) }} epics
+                    </span>
+                </h2>
 
                 {{-- Compute chart data for this manager --}}
                 @php
@@ -19,9 +27,9 @@
                     $sizeCounts = [];
                     foreach ($epics as $epic) {
                         // Use fallback values if the data is missing
-                        $status = $epic['fields']['status']['name'] ?? 'Unknown';
-                        $priority = $epic['fields']['priority']['name'] ?? 'Unknown';
-                        $size = $epic['fields']['customfield_10507']['value'] ?? 'Unknown';
+                        $status = $epic->name ?? 'Unknown';
+                        $priority = $epic->priority ?? 'Unknown';
+                        $size = $epic->size ?? 'Unknown';
 
                         $statusCounts[$status] = ($statusCounts[$status] ?? 0) + 1;
                         $priorityCounts[$priority] = ($priorityCounts[$priority] ?? 0) + 1;
@@ -68,24 +76,24 @@
                         @foreach($epics as $epic)
                             <tr>
                                 <td class="border px-4 py-2">
-                                    <a href="https://cityinnovate.atlassian.net/browse/{{ $epic['key'] }}" target="_blank" class="text-brand-600 hover:underline">
-                                        {{ $epic['key'] }}
+                                    <a href="https://cityinnovate.atlassian.net/browse/{{ $epic->jira_key }}" target="_blank" class="text-brand-600 hover:underline">
+                                        {{ $epic->jira_key }}
                                     </a>
                                 </td>
                                 <td class="border px-4 py-2">
-                                    <a href="{{ route('epics.show', $epic['key']) }}"
+                                    <a href="{{ route('epics.show', $epic->jira_key) }}"
                                        class="text-brand-600 font-medium hover:underline">
-                                        {{ $epic['fields']['summary'] ?? 'No Title' }}
+                                        {{ $epic->summary ?? 'No Title' }}
                                     </a>
                                 </td>
                                 <td class="border px-4 py-2">
-                                    {{ $epic['fields']['customfield_10507']['value'] ?? '--' }}
+                                    {{ $epic->size ?? '--' }}
                                 </td>
                                 <td class="border px-4 py-2">
-                                    {{ $epic['fields']['status']['name'] ?? '--' }}
+                                    {{ $epic->status ?? '--' }}
                                 </td>
                                 <td class="border px-4 py-2">
-                                    {{ $epic['fields']['priority']['name'] ?? '--' }}
+                                    {{ $epic->priority ?? '--' }}
                                 </td>
                             </tr>
                         @endforeach

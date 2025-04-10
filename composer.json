@@ -10,10 +10,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "erusev/parsedown": "^1.7",
         "guzzlehttp/guzzle": "^7.9",
         "laravel/framework": "^11.31",
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
+        "livewire/livewire": "^3.6",
         "spatie/laravel-google-fonts": "^1.4"
     },
     "require-dev": {

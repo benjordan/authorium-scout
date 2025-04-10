@@ -7,6 +7,8 @@
 
         <title>{{ config('app.name', 'Release Views') }}</title>
 
+        @livewireStyles
+
         <!-- Fonts -->
         @googlefonts
 
@@ -37,6 +39,7 @@
             </main>
         </div>
     </body>
+    @livewireScripts
     <script>
         // Dropdown Toggle
         document.getElementById('user-menu-button').addEventListener('click', () => {
