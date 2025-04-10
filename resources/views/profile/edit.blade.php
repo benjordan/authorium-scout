@@ -26,4 +26,8 @@
             </div>
         </div>
     </div>
+    <span class="flex justify-center space-x-4 pb-6">
+        <a href="/jira-sync" class="text-gray-400 text-sm"><i class="fa-solid fa-arrows-rotate-reverse"></i></a>
+        <a href="/flush-cache" class="text-gray-400 text-sm"><i class="fa-regular fa-trash-can-list"></i></a>
+    </span>
 </x-app-layout>
