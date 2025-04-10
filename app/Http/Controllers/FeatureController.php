@@ -24,7 +24,9 @@ class FeatureController extends Controller
 
     public function show($componentId)
     {
-        $feature = Feature::with(['issues.productManager'])->findOrFail($componentId);
+        $feature = Feature::with(['issues.productManager'])
+            ->where('jira_id', $componentId)
+            ->firstOrFail();
 
         // Prepare a sorted list of unreleased fix versions for grouping
         $issues = $feature->issues;

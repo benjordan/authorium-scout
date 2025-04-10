@@ -24,7 +24,9 @@ class CustomerController extends Controller
 
     public function show($id)
     {
-        $customer = Customer::with(['issues.fixVersions'])->findOrFail($id);
+        $customer = Customer::with(['issues.fixVersions'])
+            ->where('jira_id', $id)
+            ->firstOrFail();
 
         // Prepare a sorted list of unreleased fix versions for grouping
         $issues = $customer->issues;

@@ -11,7 +11,7 @@
     <div class="container mx-auto py-6">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-2">
             @foreach ($features as $feature)
-                <a href="{{ route('features.show', $feature->id) }}" class="block bg-white p-6 rounded shadow hover:bg-gray-50">
+                <a href="{{ route('features.show', $feature->jira_id) }}" class="block bg-white p-6 rounded shadow hover:bg-gray-50">
                     <div class="flex justify-between items-center">
                         <div>
                             <h2 class="text-lg font-bold">{{ $feature->name }}</h2>

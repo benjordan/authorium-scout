@@ -18,6 +18,8 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::redirect('/components/{id}', '/features/{id}', 301);
+
 Route::get('/dashboard', [ReleaseController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
