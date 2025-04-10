@@ -13,7 +13,8 @@
                 $epics = $data['epics'];
             @endphp
             <div class="my-6 py-6 px-8 rounded bg-white">
-                <h2 class="text-lg font-semibold text-gray-800 flex items-center space-x-2 mb-4">
+
+                <h2 class="text-xl font-medium border-b text-gray-800 flex items-center space-x-2 pb-3 mb-4">
                     <span>{{ $data['name'] }}</span>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-brand-100 text-brand-800">
                         {{ count($epics) }} epics
@@ -26,8 +27,7 @@
                     $priorityCounts = [];
                     $sizeCounts = [];
                     foreach ($epics as $epic) {
-                        // Use fallback values if the data is missing
-                        $status = $epic->name ?? 'Unknown';
+                        $status = $epic->status ?? 'Unknown';
                         $priority = $epic->priority ?? 'Unknown';
                         $size = $epic->size ?? 'Unknown';
 
@@ -39,7 +39,7 @@
                     $sizeOrder = ['XL', 'L', 'M', 'S', 'Unknown'];
                     $orderedSizeCounts = [];
                     foreach ($sizeOrder as $sizeKey) {
-                         $orderedSizeCounts[$sizeKey] = $sizeCounts[$sizeKey] ?? 0;
+                        $orderedSizeCounts[$sizeKey] = $sizeCounts[$sizeKey] ?? 0;
                     }
 
                     // Generate unique IDs using md5 to avoid spaces and special characters
@@ -61,44 +61,7 @@
                     </div>
                 </div>
 
-                {{-- The table for epics --}}
-                <table class="datatable min-w-full bg-white shadow rounded">
-                    <thead>
-                        <tr class="bg-gray-100 text-gray-600">
-                            <th class="border px-4 py-2">Key</th>
-                            <th class="border px-4 py-2">Epic Title</th>
-                            <th class="border px-4 py-2">Size</th>
-                            <th class="border px-4 py-2">Status</th>
-                            <th class="border px-4 py-2">Priority</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($epics as $epic)
-                            <tr>
-                                <td class="border px-4 py-2">
-                                    <a href="https://cityinnovate.atlassian.net/browse/{{ $epic->jira_key }}" target="_blank" class="text-brand-600 hover:underline">
-                                        {{ $epic->jira_key }}
-                                    </a>
-                                </td>
-                                <td class="border px-4 py-2">
-                                    <a href="{{ route('epics.show', $epic->jira_key) }}"
-                                       class="text-brand-600 font-medium hover:underline">
-                                        {{ $epic->summary ?? 'No Title' }}
-                                    </a>
-                                </td>
-                                <td class="border px-4 py-2">
-                                    {{ $epic->size ?? '--' }}
-                                </td>
-                                <td class="border px-4 py-2">
-                                    {{ $epic->status ?? '--' }}
-                                </td>
-                                <td class="border px-4 py-2">
-                                    {{ $epic->priority ?? '--' }}
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <x-issue-table :items="$epics" tableId="table_{{ Str::slug($manager) }}" />
 
                 {{-- Inline script to initialize the charts for this manager --}}
                 <script>
@@ -196,15 +159,4 @@
         @endforeach
     </div>
 
-    <!-- DataTable Script -->
-    <script>
-        $(document).ready(function () {
-            $('.datatable').DataTable({
-                paging: true,
-                pageLength: 50,
-                searching: true,
-                order: [[4, 'asc']], // Default sort by status
-            });
-        });
-    </script>
 </x-app-layout>
