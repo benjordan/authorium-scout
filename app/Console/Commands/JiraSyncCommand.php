@@ -9,6 +9,7 @@ use App\Models\FixVersion;
 use App\Models\Feature;
 use App\Models\Customer;
 use App\Models\ProductManager;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Log;
 
 class JiraSyncCommand extends Command
@@ -167,5 +168,10 @@ class JiraSyncCommand extends Command
         }
 
         Log::channel('jira_sync')->info('Jira sync complete. The local DB now holds the power.');
+    }
+
+    public function schedule(Schedule $schedule): void
+    {
+        $schedule->command($this->getName())->hourly();
     }
 }

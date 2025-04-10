@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Console\Commands\JiraSyncCommand;
+use Illuminate\Console\Scheduling\Schedule;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,5 +22,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        $this->app->booted(function () {
+            $schedule = app(Schedule::class);
+
+            // Manually call the command's schedule method
+            (new JiraSyncCommand(app(\App\Services\JiraService::class)))->schedule($schedule);
+        });
     }
 }
