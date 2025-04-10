@@ -37,7 +37,15 @@
             <main class="flex-grow bg-repeat" style="background-image: url('/img/topographic-bg.png');">
                 {{ $slot }}
             </main>
+
+            <footer class="w-full text-center text-xs text-gray-500 py-6 border-t mt-12">
+                {{ $appVersion }} &nbsp; | &nbsp;
+                Jira data last synced {{ $jiraLastSynced }}.
+            </footer>
         </div>
+
+
+
     </body>
     @livewireScripts
     <script>
