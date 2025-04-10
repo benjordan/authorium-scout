@@ -21,6 +21,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
+
         <div class="flex flex-col min-h-screen bg-gray-100">
             @include('layouts.navigation')
 
@@ -43,8 +44,6 @@
                 Jira data last synced {{ $jiraLastSynced }}.
             </footer>
         </div>
-
-
 
     </body>
     @livewireScripts

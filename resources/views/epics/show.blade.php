@@ -4,10 +4,10 @@
         @php
             $status = strtolower($epic->release_commit_status ?? 'unknown');
             $statusMap = [
-                'locked' => ['bg-blue-100 bg-opacity-60 text-blue-800', 'Locked', 'This epic has been locked in to deliver for the release it is associated with.'],
-                'tentative' => ['bg-orange-100 bg-opacity-60 text-orange-800', 'Tentative', 'This epic is tentatively planned for this release but could very likely be moved out to fulfill other committments.'],
-                'confirmed' => ['bg-brand-100 bg-opacity-60 text-brand-800', 'Confirmed', 'This epic has been confirmed by leadership as part of its associated release.'],
-                'committed' => ['bg-brand-100 bg-opacity-60 text-brand-800', 'Committed', 'This epic is committed to be delivered in the release it is associated with.'],
+                'locked' => ['bg-blue-100 bg-opacity-60 text-blue-800', 'Locked', 'This work has been locked in to deliver for the release it is associated with.'],
+                'tentative' => ['bg-orange-100 bg-opacity-60 text-orange-800', 'Tentative', 'This work is tentatively planned for this release but could very likely be moved out to fulfill other committments.'],
+                'confirmed' => ['bg-brand-100 bg-opacity-60 text-brand-800', 'Confirmed', 'This work has been confirmed by leadership as part of its associated release.'],
+                'committed' => ['bg-brand-100 bg-opacity-60 text-brand-800', 'Committed', 'This work is committed to be delivered in the release it is associated with.'],
             ];
         @endphp
 
