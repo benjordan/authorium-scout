@@ -28,12 +28,25 @@ class CustomerController extends Controller
             ->where('jira_id', $id)
             ->firstOrFail();
 
-        // Prepare a sorted list of unreleased fix versions for grouping
-        $issues = $customer->issues;
+        // Fetch the "All Customers" record to check against
+        $allCustomers = Customer::where('name', 'All Customers')->first();
 
-        // Group issues by unreleased fix version name
+        $customerIds = [$customer->id];
+
+        // If we're not already looking at "All Customers", include it in the filter
+        if ($customer->name !== 'All Customers' && $allCustomers) {
+            $customerIds[] = $allCustomers->id;
+        }
+
+        // Now load issues for this customer + All Customers (if needed)
+        $issues = \App\Models\Issue::with('fixVersions')
+            ->whereHas('customers', function ($query) use ($customerIds) {
+                $query->whereIn('customers.id', $customerIds);
+            })
+            ->get();
+
+        // Group by unreleased fix version
         $groupedIssues = collect();
-
         foreach ($issues as $issue) {
             $unreleasedFixes = $issue->fixVersions->filter(function ($fix) {
                 return !$fix->released && $fix->release_date;
@@ -48,7 +61,6 @@ class CustomerController extends Controller
             }
         }
 
-        // Sort by fix version release date (with Unassigned at the end)
         $sortedGrouped = $groupedIssues->sortBy(function ($issues, $key) {
             if ($key === 'Unassigned') {
                 return now()->addCentury();
@@ -57,8 +69,9 @@ class CustomerController extends Controller
             return $fix->release_date ?? now()->addCentury();
         });
 
-        // Count by issue type
-        $counts = $customer->issues()
+        $counts = \App\Models\Issue::whereHas('customers', function ($query) use ($customerIds) {
+            $query->whereIn('customers.id', $customerIds);
+        })
             ->selectRaw('type, COUNT(*) as count')
             ->groupBy('type')
             ->pluck('count', 'type')
