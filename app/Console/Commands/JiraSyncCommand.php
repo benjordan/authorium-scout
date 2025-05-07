@@ -32,6 +32,11 @@ class JiraSyncCommand extends Command
 
         // 1. Sync fix versions
         $versions = $this->jira->getAllFixVersions();
+
+        // Delete fix versions that no longer exist in Jira
+        $versionIdsFromJira = collect($versions)->pluck('id')->toArray();
+        FixVersion::whereNotIn('jira_id', $versionIdsFromJira)->delete();
+
         foreach ($versions as $version) {
             FixVersion::updateOrCreate(
                 ['jira_id' => $version['id']],
@@ -45,6 +50,11 @@ class JiraSyncCommand extends Command
 
         // 2. Sync components
         $components = $this->jira->getProjectFeatures();
+
+        // Delete features (components) that no longer exist in Jira
+        $componentIdsFromJira = collect($components)->pluck('id')->toArray();
+        Feature::whereNotIn('jira_id', $componentIdsFromJira)->delete();
+
         foreach ($components as $component) {
             Feature::updateOrCreate(
                 ['jira_id' => $component['id']],
@@ -57,6 +67,11 @@ class JiraSyncCommand extends Command
 
         // 3. Sync customers
         $customers = $this->jira->getAllCustomers();
+
+        // Delete customers that no longer exist in Jira
+        $customerIdsFromJira = array_keys($customers);
+        Customer::whereNotIn('jira_id', $customerIdsFromJira)->delete();
+
         foreach ($customers as $id => $name) {
             Customer::updateOrCreate(
                 ['jira_id' => $id],
@@ -66,6 +81,10 @@ class JiraSyncCommand extends Command
 
         // 4. Sync issues
         $issues = $this->jira->getAllProjectIssues();
+
+        // Delete issues that no longer exist in Jira
+        $issueKeysFromJira = collect($issues)->pluck('key')->toArray();
+        Issue::whereNotIn('jira_key', $issueKeysFromJira)->delete();
 
         foreach ($issues as $issue) {
             $fields = $issue['fields'] ?? [];
