@@ -38,40 +38,71 @@ class CustomerController extends Controller
             $customerIds[] = $allCustomers->id;
         }
 
+        // Define status category mapping
+        $activeStatuses = [
+            // "In Progress" category statuses
+            'PM Analysis',
+            'In Design',
+            'Requirement Writing',
+            'In Development',
+            'Pending CR',
+            'Ready for QA',
+            'Dev QA',
+            'In QA',
+            // "To Do" category statuses
+            'Incoming',
+            'Missing Information',
+            'Ready for Dev',
+            'Blocked',
+            'Pushed Back'
+        ];
+
         // Now load issues for this customer + All Customers (if needed)
+        // Make sure to eager load fixVersions relationship
         $issues = \App\Models\Issue::with('fixVersions')
             ->whereHas('customers', function ($query) use ($customerIds) {
                 $query->whereIn('customers.id', $customerIds);
             })
-            ->get();
+            ->whereIn('status', $activeStatuses) // Filter by active status categories
+            ->get()
+            ->sortBy(function ($issue) {
+                // Define priority order: Critical, P0, P1, P2, P3, then everything else
+                $priorityOrder = [
+                    'Critical' => 1,
+                    'P0' => 2,
+                    'P1' => 3,
+                    'P2' => 4,
+                    'P3' => 5,
+                ];
 
-        // Group by unreleased fix version
-        $groupedIssues = collect();
-        foreach ($issues as $issue) {
-            $unreleasedFixes = $issue->fixVersions->filter(function ($fix) {
-                return !$fix->released && $fix->release_date;
+                return $priorityOrder[$issue->priority] ?? 999; // Unknown priorities go to the end
             });
 
-            if ($unreleasedFixes->isEmpty()) {
-                $groupedIssues->put('Unassigned', $groupedIssues->get('Unassigned', collect())->push($issue));
+        // Group by commitment status
+        $committedWork = collect();
+        $openWork = collect();
+
+        foreach ($issues as $issue) {
+            $commitmentStatus = strtolower($issue->release_commit_status ?? '');
+
+            // Committed work: has "committed" status AND has fix versions
+            if ($commitmentStatus === 'committed' && $issue->fixVersions && $issue->fixVersions->count() > 0) {
+                $committedWork->push($issue);
             } else {
-                foreach ($unreleasedFixes as $fix) {
-                    $groupedIssues->put($fix->name, $groupedIssues->get($fix->name, collect())->push($issue));
-                }
+                // Open work: everything else (placeholder, tentative, none, or no status/fix version)
+                $openWork->push($issue);
             }
         }
 
-        $sortedGrouped = $groupedIssues->sortBy(function ($issues, $key) {
-            if ($key === 'Unassigned') {
-                return now()->addCentury();
-            }
-            $fix = $issues->first()->fixVersions->firstWhere('name', $key);
-            return $fix->release_date ?? now()->addCentury();
-        });
+        $groupedIssues = [
+            'committed' => $committedWork,
+            'open' => $openWork
+        ];
 
         $counts = \App\Models\Issue::whereHas('customers', function ($query) use ($customerIds) {
             $query->whereIn('customers.id', $customerIds);
         })
+            ->whereIn('status', $activeStatuses) // Filter by active status categories
             ->selectRaw('type, COUNT(*) as count')
             ->groupBy('type')
             ->pluck('count', 'type')
@@ -79,7 +110,7 @@ class CustomerController extends Controller
 
         return view('customers.show', [
             'customer' => $customer,
-            'groupedIssues' => $sortedGrouped,
+            'groupedIssues' => $groupedIssues,
             'counts' => $counts,
         ]);
     }

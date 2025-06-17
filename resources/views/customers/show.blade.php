@@ -24,16 +24,28 @@
     <div class="container mx-auto py-6 space-y-8">
 
         <div>
-            <h2 class="text-lg font-bold text-gray-800 mb-4">Items by Fix Version</h2>
-            @if (!empty($groupedIssues))
-                @foreach ($groupedIssues as $fixVersion => $items)
-                    <div class="bg-white p-6 rounded shadow mb-4">
-                        <h3 class="text-xl font-medium border-b text-gray-900 pb-3 mb-6">{{ $fixVersion }}</h3>
-                        <x-issue-table :items="$items" tableId="table_{{ Str::slug($fixVersion) }}" />
-                    </div>
-                @endforeach
+            <h2 class="text-lg font-bold text-gray-800 mb-1">Committed Work</h2>
+            <p class="text-sm text-gray-600 mb-4">Work that has been committed to a specific release and has assigned fix versions.</p>
+
+            @if($groupedIssues['committed']->count() > 0)
+                <div class="bg-white p-6 rounded shadow mb-4">
+                    <x-issue-table :items="$groupedIssues['committed']" tableId="table_committed_work" :showFixVersion="true" />
+                </div>
             @else
-                <p class="text-gray-600">No items found for this customer.</p>
+                <p class="text-gray-600">No committed work found for this customer.</p>
+            @endif
+        </div>
+
+        <div>
+            <h2 class="text-lg font-bold text-gray-800 mb-1">Open Work</h2>
+            <p class="text-sm text-gray-600 mb-4">All other work that is not yet committed to a specific release.</p>
+
+            @if($groupedIssues['open']->count() > 0)
+                <div class="bg-white p-6 rounded shadow mb-4">
+                    <x-issue-table :items="$groupedIssues['open']" tableId="table_open_work" :showFixVersion="false" />
+                </div>
+            @else
+                <p class="text-gray-600">No open work found for this customer.</p>
             @endif
         </div>
 

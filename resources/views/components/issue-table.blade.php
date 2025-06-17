@@ -1,4 +1,4 @@
-@props(['items', 'tableId' => 'issuesTable'])
+@props(['items', 'tableId' => 'issuesTable', 'showFixVersion' => false])
 
 <table id="{{ $tableId }}" class="table-auto w-full border border-gray-200">
 
@@ -10,6 +10,9 @@
             <th class="border px-4 py-2 text-left">Size</th>
             <th class="border px-4 py-2 text-left">Status</th>
             <th class="border px-4 py-2 text-left">Priority</th>
+            @if($showFixVersion)
+                <th class="border px-4 py-2 text-left">Fix Version</th>
+            @endif
             <th class="border px-4 py-2 text-left">Customer Commitment</th>
         </tr>
     </thead>
@@ -52,11 +55,29 @@
                     </span>
                 </td>
                 <td class="border px-4 py-2 text-sm">{{ $item->priority ?? '--' }}</td>
+                @if($showFixVersion)
+                    <td class="border px-4 py-2 text-sm">
+                        @if(strtolower($item->release_commit_status ?? '') === 'committed')
+                            @if($item->fixVersions && $item->fixVersions->count() > 0)
+                                @foreach($item->fixVersions as $fixVersion)
+                                    <span class="inline-block px-2 py-1 mb-1 mr-1 text-xs font-medium rounded bg-indigo-100 text-indigo-800">
+                                        {{ $fixVersion->name }}
+                                    </span>
+                                    @if(!$loop->last)<br>@endif
+                                @endforeach
+                            @else
+                                <span class="text-gray-400 italic">No fix version</span>
+                            @endif
+                        @else
+                            <span class="text-gray-400">--</span>
+                        @endif
+                    </td>
+                @endif
                 <td class="border px-4 py-2 text-sm">{{ $item->release_commit_status ?? 'None' }}</td>
             </tr>
         @empty
             <tr>
-                <td colspan="6" class="border px-4 py-2 text-center text-gray-500 italic">
+                <td colspan="{{ $showFixVersion ? '8' : '7' }}" class="border px-4 py-2 text-center text-gray-500 italic">
                     No items found.
                 </td>
             </tr>
@@ -70,9 +91,10 @@
             paging: true,
             pageLength: 10,
             searching: true,
-            order: [[0, 'desc']],
+            order: [], // Disable default sorting to maintain our custom priority order
             columnDefs: [
-                { targets: 0, width: '90px' } // target first column (Key), fixed width
+                { targets: 0, width: '90px' }, // target first column (Key), fixed width
+                { targets: 'no-sort', orderable: false } // if you want to disable sorting on specific columns
             ]
         });
     });

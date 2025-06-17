@@ -4,9 +4,9 @@
         @php
             $status = strtolower($epic->release_commit_status ?? 'unknown');
             $statusMap = [
-                'locked' => ['bg-blue-100 bg-opacity-60 text-blue-800', 'Locked', 'This work has been locked in to deliver for the release it is associated with.'],
-                'tentative' => ['bg-orange-100 bg-opacity-60 text-orange-800', 'Tentative', 'This work is tentatively planned for this release but could very likely be moved out to fulfill other committments.'],
-                'confirmed' => ['bg-brand-100 bg-opacity-60 text-brand-800', 'Confirmed', 'This work has been confirmed by leadership as part of its associated release.'],
+                'none' => ['bg-gray-100 bg-opacity-60 text-gray-600', 'None', 'This work has no commitment status assigned.'],
+                'placeholder' => ['bg-gray-100 bg-opacity-60 text-gray-800', 'Placeholder', 'This work is a placeholder and not yet planned for any specific release.'],
+                'tentative' => ['bg-orange-100 bg-opacity-60 text-orange-800', 'Tentative', 'This work is tentatively planned with a fix version but has not been committed and will more than likely be moved out to fulfill other commitments.'],
                 'committed' => ['bg-brand-100 bg-opacity-60 text-brand-800', 'Committed', 'This work is committed to be delivered in the release it is associated with.'],
             ];
         @endphp
@@ -101,18 +101,20 @@
                         </span>
                     </div>
 
-                    <!-- Fix Versions -->
-                    <div class="flex justify-between py-2">
-                        <span class="text-gray-600 font-medium text-sm">Fix Versions:</span>
-                        <span class="font-semibold space-x-1">
-                            @foreach ($epic->fixVersions as $fix)
-                                <a href="{{ route('releases.show', $fix->id) }}"
-                                    class="inline-block px-2 py-1 bg-blue-50 text-blue-800 rounded text-sm font-medium hover:underline">
-                                    {{ $fix->name }}
-                                </a>
-                            @endforeach
-                        </span>
-                    </div>
+                    <!-- Fix Versions - Only show if release commit status is "Committed" -->
+                    @if(strtolower($epic->release_commit_status ?? '') === 'committed')
+                        <div class="flex justify-between py-2">
+                            <span class="text-gray-600 font-medium text-sm">Fix Versions:</span>
+                            <span class="font-semibold space-x-1">
+                                @foreach ($epic->fixVersions as $fix)
+                                    <a href="{{ route('releases.show', $fix->id) }}"
+                                        class="inline-block px-2 py-1 bg-blue-50 text-blue-800 rounded text-sm font-medium hover:underline">
+                                        {{ $fix->name }}
+                                    </a>
+                                @endforeach
+                            </span>
+                        </div>
+                    @endif
 
                     <!-- Customer Commitment -->
                     <div class="flex justify-between py-2">

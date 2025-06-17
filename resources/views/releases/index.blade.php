@@ -51,6 +51,7 @@
                                             <a href="{{ route('releases.statusDetails', ['releaseKey' => $release->release->id, 'type' => 'epics', 'status' => $status]) }}"
                                                class="text-brand-600 hover:underline">
                                                 <i class="fas fa-eye"></i>
+                                                <span class="sr-only">View</span>
                                             </a>
                                         </td>
                                     </tr>
@@ -87,6 +88,7 @@
                                             <a href="{{ route('releases.statusDetails', ['releaseKey' => $release->release->id, 'type' => 'issues', 'status' => $status]) }}"
                                                class="text-brand-600 hover:underline">
                                                 <i class="fas fa-eye"></i>
+                                                <span class="sr-only">View</span>
                                             </a>
                                         </td>
                                     </tr>
