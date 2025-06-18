@@ -37,7 +37,7 @@
         </div>
 
         <div>
-            <h2 class="text-lg font-bold text-gray-800 mb-1">Open Work</h2>
+            <h2 class="text-lg font-bold text-gray-800 mb-1">Uncommited Work</h2>
             <p class="text-sm text-gray-600 mb-4">All other work that is not yet committed to a specific release.</p>
 
             @if($groupedIssues['open']->count() > 0)

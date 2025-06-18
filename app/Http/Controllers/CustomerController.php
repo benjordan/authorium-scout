@@ -28,7 +28,8 @@ class CustomerController extends Controller
             ->where('jira_id', $id)
             ->firstOrFail();
 
-        // Only use this specific customer - remove "All Customers" logic
+        // Always use only this specific customer (whether it's "All Customers" or any other customer)
+        // Each customer page shows only work tagged specifically to that customer
         $customerIds = [$customer->id];
 
         // Define status category mapping

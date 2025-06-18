@@ -42,7 +42,7 @@ class CustomerIndex extends Component
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })
-            ->where('name', '!=', 'All Customers') // Exclude "All Customers" from the list
+            // Remove the exclusion of "All Customers" so it appears in the list
             ->get();
 
         return view('livewire.customer-index', [
