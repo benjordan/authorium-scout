@@ -43,6 +43,7 @@ class CustomerIndex extends Component
                 $query->where('name', 'like', '%' . $this->search . '%');
             })
             // Remove the exclusion of "All Customers" so it appears in the list
+            ->orderBy('name', 'asc') // Sort customers alphabetically
             ->get();
 
         return view('livewire.customer-index', [
