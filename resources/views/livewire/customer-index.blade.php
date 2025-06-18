@@ -23,8 +23,8 @@
                         @endphp
                         <div class="flex gap-2">
                             <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm">{{ $typeCounts['Epic'] ?? 0 }} Epics</span>
-                            <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">{{ $typeCounts['Bug'] ?? 0 }} Bugs</span>
                             <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">{{ $typeCounts['Request'] ?? 0 }} Requests</span>
+                            <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">{{ $typeCounts['Bug'] ?? 0 }} Bugs</span>
                             <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded font-medium text-sm">{{ $total }} Total</span>
                         </div>
                     </div>
