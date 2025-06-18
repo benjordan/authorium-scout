@@ -25,7 +25,7 @@
 
         <div class="bg-white p-6 rounded shadow mb-4">
             <h2 class="text-2xl font-bold text-gray-800 mb-1">Committed Work</h2>
-            <p class="text-sm text-gray-600 pb-4 mb-6 border-b-2 border-gray-200">Work that has been committed to a specific release and has assigned fix versions.</p>
+            <p class="text-sm text-gray-600 pb-4 mb-6 border-b border-gray-200">Work that has been committed to a specific release and has assigned fix versions.</p>
 
             @if($groupedIssues['committed']->count() > 0)
                 <div>
@@ -38,7 +38,7 @@
 
         <div class="bg-white p-6 rounded shadow mb-4">
             <h2 class="text-2xl font-bold text-gray-800 mb-1">Uncommited Work</h2>
-            <p class="text-sm text-gray-600 pb-4 mb-6 border-b-2 border-gray-200">All other work that is not yet committed to a specific release.</p>
+            <p class="text-sm text-gray-600 pb-4 mb-6 border-b border-gray-200">All other work that is not yet committed to a specific release.</p>
 
             @if($groupedIssues['open']->count() > 0)
                 <div>
