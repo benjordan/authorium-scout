@@ -89,7 +89,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         $('#{{ $tableId }}').DataTable({
             paging: true,
-            pageLength: 10,
+            pageLength: 25,
             searching: true,
             order: [], // Disable default sorting to maintain our custom priority order
             columnDefs: [
