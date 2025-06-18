@@ -32,7 +32,7 @@
                     <x-issue-table :items="$groupedIssues['committed']" tableId="table_committed_work" :showFixVersion="true" />
                 </div>
             @else
-                <p class="bg-gray-100 p-4 rounded text-gray-600">No committed work found for this customer.</p>
+                <p class="bg-gray-50 p-4 rounded text-gray-600">No committed work found for this customer.</p>
             @endif
         </div>
 
@@ -45,7 +45,7 @@
                     <x-issue-table :items="$groupedIssues['open']" tableId="table_open_work" :showFixVersion="false" />
                 </div>
             @else
-                <p class="bg-gray-100 p-4 rounded text-gray-600">No open work found for this customer.</p>
+                <p class="bg-gray-50 p-4 rounded text-gray-600">No uncommitted work found for this customer.</p>
             @endif
         </div>
 
