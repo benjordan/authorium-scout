@@ -28,15 +28,8 @@ class CustomerController extends Controller
             ->where('jira_id', $id)
             ->firstOrFail();
 
-        // Fetch the "All Customers" record to check against
-        $allCustomers = Customer::where('name', 'All Customers')->first();
-
+        // Only use this specific customer - remove "All Customers" logic
         $customerIds = [$customer->id];
-
-        // If we're not already looking at "All Customers", include it in the filter
-        if ($customer->name !== 'All Customers' && $allCustomers) {
-            $customerIds[] = $allCustomers->id;
-        }
 
         // Define status category mapping
         $activeStatuses = [
