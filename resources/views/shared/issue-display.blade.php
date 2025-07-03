@@ -35,7 +35,7 @@
                                         <a href="{{ route('epics.show', $item['key']) }}" class="font-bold {{ $item['fields']['issuetype']['name'] === 'Bug' ? 'text-red-800' : ($item['fields']['issuetype']['name'] === 'Request' ? 'text-blue-800' : 'text-brand-600') }}">
                                             {{ $item['fields']['summary'] ?? 'No summary available' }}
                                         </a>
-                                        <a href="https://cityinnovate.atlassian.net/browse/{{ $item['key'] }}" class="text-xs text-gray-600 underline" target="_blank">View on Jira</a>
+                                        <a href="https://authorium.atlassian.net/browse/{{ $item['key'] }}" class="text-xs text-gray-600 underline" target="_blank">View on Jira</a>
                                     </div>
                                     <p class="text-sm text-gray-500 mt-1">
                                         Key: {{ $item['key'] ?? '—' }} |
@@ -63,7 +63,7 @@
                                 <a href="{{ route('epics.show', $item['key']) }}" class="font-bold {{ $item['fields']['issuetype']['name'] === 'Bug' ? 'text-red-800' : ($item['fields']['issuetype']['name'] === 'Request' ? 'text-blue-800' : 'text-brand-600') }}">
                                     {{ $item['fields']['summary'] ?? 'No summary available' }}
                                 </a>
-                                <a href="https://cityinnovate.atlassian.net/browse/{{ $item['key'] }}" class="text-xs text-gray-600 underline" target="_blank">View on Jira</a>
+                                <a href="https://authorium.atlassian.net/browse/{{ $item['key'] }}" class="text-xs text-gray-600 underline" target="_blank">View on Jira</a>
                             </div>
                             <p class="text-sm text-gray-500 mt-1">
                                 Key: {{ $item['key'] ?? '—' }} |
@@ -104,7 +104,7 @@
                                         <td class="px-4 py-2">{{ $item['fields']['issuetype']['name'] ?? '—' }}</td>
                                         <td class="px-4 py-2">{{ $item['fields']['priority']['name'] ?? '—' }}</td>
                                         <td class="px-4 py-2">
-                                            <a href="https://cityinnovate.atlassian.net/browse/{{ $item['key'] }}" class="text-blue-600 underline text-xs" target="_blank">View</a>
+                                            <a href="https://authorium.atlassian.net/browse/{{ $item['key'] }}" class="text-blue-600 underline text-xs" target="_blank">View</a>
                                         </td>
                                     </tr>
                                 @endforeach

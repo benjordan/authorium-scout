@@ -21,7 +21,7 @@
         @forelse($items as $item)
             <tr class="odd:bg-gray-50 even:bg-white">
                 <td class="border px-4 py-2 text-sm">
-                    <a href="https://cityinnovate.atlassian.net/browse/{{ $item->jira_key }}" target="_blank" class="text-brand-600 hover:underline">
+                    <a href="https://authorium.atlassian.net/browse/{{ $item->jira_key }}" target="_blank" class="text-brand-600 hover:underline">
                         {{ $item->jira_key }}
                     </a>
                 </td>

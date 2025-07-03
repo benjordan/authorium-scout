@@ -26,7 +26,7 @@
         <div class="bg-white p-6 rounded shadow flex flex-col lg:flex-row justify-between">
             <!-- Left Column: Epic Summary -->
             <div class="flex-1 lg:w-[65%] mb-4 lg:mb-0">
-                <a href="https://cityinnovate.atlassian.net/browse/{{ $epic->jira_key }}" target="_blank" class="inline-block bg-gray-100 px-2 py-1 text-sm mb-2 font-medium rounded">
+                <a href="https://authorium.atlassian.net/browse/{{ $epic->jira_key }}" target="_blank" class="inline-block bg-gray-100 px-2 py-1 text-sm mb-2 font-medium rounded">
                     {{ $epic->jira_key }}
                 </a>
                 @php
@@ -56,7 +56,7 @@
             <div class="lg:w-[35%] lg:ml-8">
                 <div class="flex justify-between mb-2 items-center">
                     <h2 class="text-lg font-bold text-gray-700 mr-4">Item Details</h2>
-                    <a href="https://cityinnovate.atlassian.net/browse/{{ $epic->jira_key }}"
+                    <a href="https://authorium.atlassian.net/browse/{{ $epic->jira_key }}"
                         target="_blank"
                         class="bg-brand-600 rounded border text-white py-2 px-3 hover:underline text-sm font-semibold">
                         View in Jira
